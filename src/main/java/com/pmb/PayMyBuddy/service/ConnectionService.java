@@ -1,4 +1,4 @@
-package com.pmb.paymybuddy.service;
+package com.pmb.PayMyBuddy.service;
 
 public class ConnectionService {
 }

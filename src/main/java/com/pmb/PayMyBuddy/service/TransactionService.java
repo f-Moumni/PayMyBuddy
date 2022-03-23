@@ -1,17 +1,20 @@
-package com.pmb.paymybuddy.service;
+package com.pmb.PayMyBuddy.service;
 
-import com.pmb.paymybuddy.DTO.PaymentDTO;
-import com.pmb.paymybuddy.DTO.TransactionDTO;
-import com.pmb.paymybuddy.DTO.TransferDTO;
-import com.pmb.paymybuddy.exception.BalanceException;
-import com.pmb.paymybuddy.exception.DataNoteFoundException;
-import com.pmb.paymybuddy.model.Account;
-import com.pmb.paymybuddy.model.Payment;
-import com.pmb.paymybuddy.model.Transfer;
-import com.pmb.paymybuddy.repository.AccountRepository;
-import com.pmb.paymybuddy.repository.PaymentRepository;
-import com.pmb.paymybuddy.repository.TransferRepository;
-import com.pmb.paymybuddy.util.TransactionMapper;
+
+import com.pmb.PayMyBuddy.DTO.PaymentDTO;
+import com.pmb.PayMyBuddy.DTO.TransactionDTO;
+
+import com.pmb.PayMyBuddy.DTO.TransferDTO;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
+
+import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
+import com.pmb.PayMyBuddy.model.Account;
+import com.pmb.PayMyBuddy.model.Payment;
+import com.pmb.PayMyBuddy.model.Transfer;
+import com.pmb.PayMyBuddy.repository.AccountRepository;
+import com.pmb.PayMyBuddy.repository.PaymentRepository;
+import com.pmb.PayMyBuddy.repository.TransferRepository;
+import com.pmb.PayMyBuddy.util.TransactionMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,11 +48,11 @@ public class TransactionService implements ITransactionService {
      *
      * @param paymentDTO
      * @return tue is payment is done
-     * @throws DataNoteFoundException
-     * @throws BalanceException
+     * @throws InsufficientFundsException
      */
     @Override
-    public boolean addPayment(PaymentDTO paymentDTO) throws BalanceException {
+    public boolean addPayment(PaymentDTO paymentDTO) throws InsufficientFundsException {
+
         Account accountDebit = accountRepository.findByMail(paymentDTO.getDebitAccountEmail()).get();
         Account accountCredit = accountRepository.findByMail(paymentDTO.getCreditAccountEmail()).get();
         log.info("saving payment to {} {}", accountCredit.getAccountOwner().getFirstName(),
@@ -67,7 +70,7 @@ public class TransactionService implements ITransactionService {
                 paymentRepository.save(
                         new Payment(paymentDTO.getAmount(), fee, paymentDTO.getDescription(), now(), accountDebit, accountCredit));
             } else {
-                throw new BalanceException("poor balance");
+                throw new InsufficientFundsException("poor balance");
             }
         }
         updatePMBAccount();// update admin account
@@ -80,16 +83,16 @@ public class TransactionService implements ITransactionService {
      *
      * @param transferToAdd
      * @return true transfer is done
-     * @throws BalanceException
-     * @throws DataNoteFoundException
+     * @throws InsufficientFundsException
+     * @throws DataNotFoundException
      */
     @Override
-    public boolean addTransfer(TransferDTO transferToAdd) throws BalanceException, DataNoteFoundException {
+    public boolean addTransfer(TransferDTO transferToAdd) throws DataNotFoundException, InsufficientFundsException {
         Account accountDebit = accountRepository.findByMail(transferToAdd.getAccountEmail()).get();
         log.info("saving transfer for {}", accountDebit.getAccountOwner().getFirstName());
         if (accountDebit.getAccountOwner().getBankAccount() == null) { //bank account verification
             log.error("no bank account attached to this account ");
-            throw new DataNoteFoundException("bank account not found ");
+            throw new DataNotFoundException("bank account not found ");
         }
         if (accountDebit.isActive()) {//account is active
             fee = (transferToAdd.getAmount() * feePercentage) / 100;
@@ -99,7 +102,7 @@ public class TransactionService implements ITransactionService {
                 accountRepository.save(accountDebit);
                 transferRepository.save(new Transfer(transferToAdd.getAmount(), fee, transferToAdd.getDescription(), now(), accountDebit, accountDebit.getAccountOwner().getBankAccount()));
             } else {
-                throw new BalanceException("poor balance");
+                throw new InsufficientFundsException("poor balance");
             }
         }
         updatePMBAccount();// update admin account

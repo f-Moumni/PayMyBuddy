@@ -1,11 +1,12 @@
-package com.pmb.paymybuddy.controller;
+package com.pmb.PayMyBuddy.controller;
 
-import com.pmb.paymybuddy.DTO.AccountDTO;
-import com.pmb.paymybuddy.exception.AlreadyExistsException;
-import com.pmb.paymybuddy.exception.BalanceException;
-import com.pmb.paymybuddy.exception.DataNoteFoundException;
-import com.pmb.paymybuddy.DTO.Response;
-import com.pmb.paymybuddy.service.UserService;
+
+import com.pmb.PayMyBuddy.DTO.Response;
+import com.pmb.PayMyBuddy.DTO.UserDTO;
+import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
+import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
+import com.pmb.PayMyBuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class UserController {
 
 
     @GetMapping
-    public ResponseEntity<Response> GetAccount(@RequestParam @Valid String mail) throws DataNoteFoundException {
+    public ResponseEntity<Response> GetAccount(@RequestParam @Valid String mail) throws DataNotFoundException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("account", userService.getUser(mail)))
@@ -36,9 +37,9 @@ public class UserController {
                         .build());
     }
 
-     @PutMapping
-    public ResponseEntity<Response> updateUserAccount(@RequestBody @Valid AccountDTO accountToUpdate) throws DataNoteFoundException {
-         return ResponseEntity.ok(
+    @PutMapping
+    public ResponseEntity<Response> updateUserAccount(@RequestBody @Valid UserDTO accountToUpdate) {
+        return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("account", userService.updateUser(accountToUpdate)))
                         .message("Account updated")
@@ -46,8 +47,9 @@ public class UserController {
                         .statusCode(OK.value())
                         .build());
     }
+
     @PostMapping
-    public ResponseEntity<Response> SaveUserAccount(@RequestBody @Valid AccountDTO account) throws AlreadyExistsException {
+    public ResponseEntity<Response> SaveUserAccount(@RequestBody @Valid UserDTO account) throws AlreadyExistsException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("account", userService.addUser(account)))
@@ -56,12 +58,13 @@ public class UserController {
                         .statusCode(CREATED.value())
                         .build());
     }
+
     @DeleteMapping
-    public ResponseEntity<Response> deleteUser(@RequestBody @Valid AccountDTO account) throws BalanceException, DataNoteFoundException {
+    public ResponseEntity<Response> deleteUser(@RequestParam @Valid String mail) throws DataNotFoundException, InsufficientFundsException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("account", userService.deleteUser(account)))
-                        .message("Account updated")
+                        .data(Map.of("account", userService.deleteUser(mail)))
+                        .message("Account deleted")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());

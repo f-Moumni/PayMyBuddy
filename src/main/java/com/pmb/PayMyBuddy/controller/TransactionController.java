@@ -1,13 +1,12 @@
-package com.pmb.paymybuddy.controller;
+package com.pmb.PayMyBuddy.controller;
 
-import com.pmb.paymybuddy.DTO.PaymentDTO;
-import com.pmb.paymybuddy.DTO.Response;
-import com.pmb.paymybuddy.DTO.TransferDTO;
-import com.pmb.paymybuddy.exception.BalanceException;
-import com.pmb.paymybuddy.exception.DataNoteFoundException;
-import com.pmb.paymybuddy.service.IContactService;
-import com.pmb.paymybuddy.service.IPaymentService;
-import com.pmb.paymybuddy.service.ITransactionService;
+
+import com.pmb.PayMyBuddy.DTO.PaymentDTO;
+import com.pmb.PayMyBuddy.DTO.Response;
+import com.pmb.PayMyBuddy.DTO.TransferDTO;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
+import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
+import com.pmb.PayMyBuddy.service.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,7 @@ public class TransactionController {
     ITransactionService transactionService;
 
     @PostMapping("payment")
-    public ResponseEntity<Response> addPayment(@RequestBody @Valid PaymentDTO operation) throws BalanceException, DataNoteFoundException {
+    public ResponseEntity<Response> addPayment(@RequestBody @Valid PaymentDTO operation) throws InsufficientFundsException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("payment", transactionService.addPayment(operation)))
@@ -37,7 +36,7 @@ public class TransactionController {
     }
 
     @PostMapping("transfer")
-    public ResponseEntity<Response> addTransfer(@RequestBody @Valid TransferDTO operation) throws BalanceException, DataNoteFoundException {
+    public ResponseEntity<Response> addTransfer(@RequestBody @Valid TransferDTO operation) throws  DataNotFoundException, InsufficientFundsException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("transfer", transactionService.addTransfer(operation)))
@@ -46,8 +45,9 @@ public class TransactionController {
                         .statusCode(OK.value())
                         .build());
     }
+
     @GetMapping
-    public ResponseEntity<Response> getTransactions(@RequestParam @Valid String mail) throws BalanceException, DataNoteFoundException {
+    public ResponseEntity<Response> getTransactions(@RequestParam @Valid String mail)  {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("payment", transactionService.getAllTransactions(mail)))

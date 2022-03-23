@@ -1,4 +1,4 @@
-package com.pmb.paymybuddy.model;
+package com.pmb.PayMyBuddy.model;
 
 import lombok.*;
 

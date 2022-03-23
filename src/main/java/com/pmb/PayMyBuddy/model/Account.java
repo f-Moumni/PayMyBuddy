@@ -1,4 +1,4 @@
-package com.pmb.paymybuddy.model;
+package com.pmb.PayMyBuddy.model;
 
 import lombok.*;
 import org.hibernate.validator.constraints.UniqueElements;
@@ -21,7 +21,7 @@ public class Account {
      * pay may buddy account's id
      **/
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
     private long id;
 
@@ -57,7 +57,7 @@ public class Account {
     /**
      * pay may buddy account's owner
      **/
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade =CascadeType.ALL)
     @JoinColumn(name = "owner")
     private User accountOwner;
 

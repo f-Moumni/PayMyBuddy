@@ -1,7 +1,7 @@
-package com.pmb.paymybuddy.model;
+package com.pmb.PayMyBuddy.model;
 
 import lombok.*;
-import org.hibernate.type.StringNVarcharType;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

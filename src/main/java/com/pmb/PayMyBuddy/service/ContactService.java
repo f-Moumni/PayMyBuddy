@@ -1,13 +1,15 @@
-package com.pmb.paymybuddy.service;
+package com.pmb.PayMyBuddy.service;
 
-import com.pmb.paymybuddy.DTO.ContactDTO;
-import com.pmb.paymybuddy.exception.AlreadyExistsException;
-import com.pmb.paymybuddy.exception.DataNoteFoundException;
-import com.pmb.paymybuddy.model.Account;
-import com.pmb.paymybuddy.model.User;
-import com.pmb.paymybuddy.repository.AccountRepository;
-import com.pmb.paymybuddy.repository.UserRepository;
-import com.pmb.paymybuddy.util.AccountMapper;
+
+import com.pmb.PayMyBuddy.DTO.ContactDTO;
+import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
+
+import com.pmb.PayMyBuddy.model.Account;
+import com.pmb.PayMyBuddy.model.User;
+import com.pmb.PayMyBuddy.repository.AccountRepository;
+import com.pmb.PayMyBuddy.repository.UserRepository;
+import com.pmb.PayMyBuddy.util.AccountMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,13 +34,13 @@ public class ContactService implements IContactService {
      *
      * @param email
      * @return
-     * @throws DataNoteFoundException
+     * @throws DataNotFoundException
      */
     @Override
-    public ContactDTO getContact(String email) throws DataNoteFoundException {
+    public ContactDTO getContact(String email) throws DataNotFoundException {
         log.info("searching contact with email {}", email);
         User user = userRepository.findByAccount_Mail(email).orElseThrow(() ->
-                new DataNoteFoundException("no account found with email address " + email));
+                new DataNotFoundException("no account found with email address " + email));
         Account contact = user.getAccount();
         return accountMapper.toContactDTO(contact);
     }
@@ -48,7 +50,7 @@ public class ContactService implements IContactService {
      *
      * @param contactDTO
      * @return true if added, false if not
-     * @throws DataNoteFoundException
+     * @throws DataNotFoundException
      */
 
     @Override

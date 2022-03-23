@@ -1,7 +1,8 @@
-package com.pmb.paymybuddy.util;
+package com.pmb.PayMyBuddy.util;
 
-import com.pmb.paymybuddy.DTO.BankAccountDTO;
-import com.pmb.paymybuddy.model.BankAccount;
+
+import com.pmb.PayMyBuddy.DTO.BankAccountDTO;
+import com.pmb.PayMyBuddy.model.BankAccount;
 import org.springframework.stereotype.Component;
 
 @Component

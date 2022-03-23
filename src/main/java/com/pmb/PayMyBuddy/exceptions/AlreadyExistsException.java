@@ -1,4 +1,4 @@
-package com.pmb.paymybuddy.exception;
+package com.pmb.PayMyBuddy.exceptions;
 
 public class AlreadyExistsException extends Exception {
 

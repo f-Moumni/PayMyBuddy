@@ -1,6 +1,7 @@
-package com.pmb.paymybuddy.repository;
+package com.pmb.PayMyBuddy.repository;
 
-import com.pmb.paymybuddy.model.BankAccount;
+import com.pmb.PayMyBuddy.model.BankAccount;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

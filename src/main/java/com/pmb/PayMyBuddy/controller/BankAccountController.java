@@ -1,10 +1,11 @@
-package com.pmb.paymybuddy.controller;
+package com.pmb.PayMyBuddy.controller;
 
-import com.pmb.paymybuddy.DTO.BankAccountDTO;
-import com.pmb.paymybuddy.DTO.Response;
-import com.pmb.paymybuddy.exception.DataNoteFoundException;
-import com.pmb.paymybuddy.service.IBankAccountService;
-import com.pmb.paymybuddy.service.IContactService;
+
+import com.pmb.PayMyBuddy.DTO.BankAccountDTO;
+import com.pmb.PayMyBuddy.DTO.Response;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
+
+import com.pmb.PayMyBuddy.service.IBankAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class BankAccountController {
     IBankAccountService bankAccountService;
 
     @GetMapping
-    public ResponseEntity<Response> getBankAccount(@RequestParam @Valid String mail) throws DataNoteFoundException {
+    public ResponseEntity<Response> getBankAccount(@RequestParam @Valid String mail) throws DataNotFoundException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("bankAccount", bankAccountService.getBankAccount(mail)))

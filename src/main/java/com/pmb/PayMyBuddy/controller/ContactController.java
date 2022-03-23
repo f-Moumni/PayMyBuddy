@@ -1,10 +1,11 @@
-package com.pmb.paymybuddy.controller;
+package com.pmb.PayMyBuddy.controller;
 
-import com.pmb.paymybuddy.DTO.ContactDTO;
-import com.pmb.paymybuddy.exception.AlreadyExistsException;
-import com.pmb.paymybuddy.exception.DataNoteFoundException;
-import com.pmb.paymybuddy.DTO.Response;
-import com.pmb.paymybuddy.service.IContactService;
+
+import com.pmb.PayMyBuddy.DTO.ContactDTO;
+import com.pmb.PayMyBuddy.DTO.Response;
+import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
+import com.pmb.PayMyBuddy.service.IContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +19,10 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/contact")
 public class ContactController {
 @Autowired
-    IContactService contactService;
+IContactService contactService;
 
     @GetMapping
-    public ResponseEntity<Response> getContact(@RequestParam @Valid String mail) throws DataNoteFoundException {
+    public ResponseEntity<Response> getContact(@RequestParam @Valid String mail) throws DataNotFoundException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("contact", contactService.getContact(mail)))
