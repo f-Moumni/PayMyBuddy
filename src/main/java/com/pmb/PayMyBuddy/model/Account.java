@@ -1,7 +1,6 @@
 package com.pmb.PayMyBuddy.model;
 
 import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -57,7 +56,7 @@ public class Account {
     /**
      * pay may buddy account's owner
      **/
-    @OneToOne(cascade =CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "owner")
     private User accountOwner;
 
@@ -85,15 +84,16 @@ public class Account {
     private Set<Payment> paymentsSent = new TreeSet<>();
 
     /**
-     * All transfer sent from pay may buddy account to contacts
+     * All transfer  from /to bankAccount
      **/
     @OneToMany(fetch = FetchType.LAZY,
-            mappedBy = "creditBankAccount",cascade = {
+            mappedBy = "bankAccount",cascade = {
             CascadeType.MERGE,
             CascadeType.PERSIST
     }
     )
-    private Set<Transfer> transferSent = new TreeSet<>();
+    private Set<Transfer> transfers = new TreeSet<>();
+
 
     /**
      * Constructor

@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -48,19 +50,19 @@ public class ContactService implements IContactService {
     /**
      * add contact between two users
      *
-     * @param contactDTO
+     * @param
      * @return true if added, false if not
      * @throws DataNotFoundException
      */
 
     @Override
-    public boolean addContact(ContactDTO contactDTO, String ownerEmail) throws AlreadyExistsException {
-        String email = contactDTO.getEmail();
-        log.info("adding contact with email {}", email);
+    public boolean addContact(String contactMail, String ownerEmail) throws AlreadyExistsException {
+
+        log.info("adding contact with email {}", contactMail);
         User owner = userRepository.findByAccount_Mail(ownerEmail).get();
-        User contact = userRepository.findByAccount_Mail(email).get();
+        User contact = userRepository.findByAccount_Mail(contactMail).get();
         if (owner.getContacts().contains(contact)){
-            log.error("{} is already in contact",contactDTO.getEmail());
+            log.error("{} is already in contact",contactMail);
             throw new AlreadyExistsException("contact already saved");
         }
         owner.addContact(contact);
@@ -72,23 +74,28 @@ public class ContactService implements IContactService {
     /**
      * delete contact between two users
      *
-     * @param contactDTO
+     * @param
      * @param ownerEmail
      * @return true if deleted, false if not
      */
 
     @Override
-    public boolean deleteContact(ContactDTO contactDTO, String ownerEmail) {
-        String email = contactDTO.getEmail();
-        log.info("adding contact with email {}", email);
+    public Boolean deleteContact(String contactMail, String ownerEmail) {
+        log.info("adding contact with email {}", contactMail);
         User owner = userRepository.findByAccount_Mail(ownerEmail).get();
-        User contact = userRepository.findByAccount_Mail(email).get();
+        User contact = userRepository.findByAccount_Mail(contactMail).get();
         owner.removeContact(contact);
         userRepository.save(owner);
         return true;
     }
 
-    /* to do get all contacts*/
+
+    @Override
+    public Set<ContactDTO> getContacts(String ownerEmail) {
+        log.info("getting all contacts of email {}", ownerEmail);
+        User owner = userRepository.findByAccount_Mail(ownerEmail).get();
+        return owner.getContacts().stream().map(user ->accountMapper.toContactDTO(user.getAccount())).collect(Collectors.toSet());
+    }
 }
 
 

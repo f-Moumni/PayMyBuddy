@@ -86,7 +86,7 @@ public class User {
 
     public void removeAccount(User user) {
         user.account.setActive(false);
-        user.account.setPassword("0000");
+        user.account.setPassword(null);
     }
 
     public void addContact(User user) {

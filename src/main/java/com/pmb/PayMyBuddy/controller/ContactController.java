@@ -32,21 +32,31 @@ IContactService contactService;
                         .build());
     }
     @PostMapping
-    public ResponseEntity<Response> addContact(@RequestBody @Valid ContactDTO contactToAdd, @RequestParam @Valid String mail) throws AlreadyExistsException {
+    public ResponseEntity<Response> addContact(@RequestParam @Valid String contactMail , @RequestParam @Valid String mail) throws AlreadyExistsException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("contact", contactService.addContact(contactToAdd,mail)))
+                        .data(Map.of("contact", contactService.addContact(contactMail,mail)))
                         .message("Contact added")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
     }
     @PutMapping
-    public ResponseEntity<Response> removeContact(@RequestBody @Valid ContactDTO contactToAdd, @RequestParam @Valid String mail) {
+    public ResponseEntity<Response> removeContact(@RequestParam @Valid String contactMail, @RequestParam @Valid String mail) {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("contact", contactService.deleteContact(contactToAdd,mail)))
+                        .data(Map.of("contact", contactService.deleteContact(contactMail,mail)))
                         .message("Contact removed")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+    @GetMapping("/all")
+    public ResponseEntity<Response> getContacts(@RequestParam @Valid String mail){
+        return ResponseEntity.ok(
+                Response.builder().timeStamp(now())
+                        .data(Map.of("contacts", contactService.getContacts(mail)))
+                        .message("Contacts retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());

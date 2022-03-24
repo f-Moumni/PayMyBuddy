@@ -12,9 +12,10 @@ import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
 import java.util.Set;
 
 public interface ITransactionService {
-    boolean addPayment(PaymentDTO paymentDTO) throws InsufficientFundsException;
 
-    boolean addTransfer(TransferDTO transferToAdd) throws InsufficientFundsException, DataNotFoundException;
+    boolean doPayment(PaymentDTO paymentDTO) throws InsufficientFundsException;
+
+    boolean doTransfer(TransferDTO transferToAdd) throws DataNotFoundException, InsufficientFundsException;
 
     Set<TransactionDTO> getAllTransactions(String email);
 }

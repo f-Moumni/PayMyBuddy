@@ -9,12 +9,8 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @NoArgsConstructor
-@DiscriminatorValue("payment")
+@DiscriminatorValue("PAYMENT")
 public class Payment extends Transaction{
-
-    @ManyToOne
-    @JoinColumn(name = "credit_account")
-    private Account creditAccount ;
 
     public Payment(double amount, double fee, String description, LocalDateTime dateTime, Account debitAccount, Account creditAccount) {
         this.setAmount(amount);

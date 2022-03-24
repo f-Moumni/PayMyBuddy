@@ -5,11 +5,20 @@ import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
 import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public interface IContactService {
     ContactDTO getContact(String email) throws DataNotFoundException;
 
-    boolean addContact(ContactDTO contactDTO, String mail) throws AlreadyExistsException;
 
-    boolean deleteContact(ContactDTO contactDTO, String ownerEmail);
+
+    boolean addContact(String contactMail, String ownerEmail) throws AlreadyExistsException;
+
+
+
+     Boolean deleteContact(String contactMail, String ownerEmail);
+
+
+    Set<ContactDTO> getContacts(String ownerEmail);
 }
