@@ -1,13 +1,15 @@
-package com.pmb.paymybuddy.service;
+package com.pmb.PayMyBuddy.service;
 
-import com.pmb.paymybuddy.DTO.AccountDTO;
-import com.pmb.paymybuddy.exception.AlreadyExistsException;
-import com.pmb.paymybuddy.exception.BalanceException;
-import com.pmb.paymybuddy.exception.DataNoteFoundException;
-import com.pmb.paymybuddy.model.Account;
-import com.pmb.paymybuddy.model.User;
-import com.pmb.paymybuddy.repository.UserRepository;
-import com.pmb.paymybuddy.util.AccountMapper;
+
+import com.pmb.PayMyBuddy.DTO.AccountDTO;
+import com.pmb.PayMyBuddy.DTO.UserDTO;
+import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
+import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
+import com.pmb.PayMyBuddy.model.Account;
+import com.pmb.PayMyBuddy.model.User;
+import com.pmb.PayMyBuddy.repository.UserRepository;
+import com.pmb.PayMyBuddy.util.AccountMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,14 +29,14 @@ public class UserService implements IUserService {
 
 
     @Override
-    public Boolean deleteUser(AccountDTO accountToDelete) throws DataNoteFoundException, BalanceException {
-        log.info("deleting account of {} {}", accountToDelete.getFirstName(), accountToDelete.getLastName());
-        User userToDelete = userRepository.findByAccount_Mail(accountToDelete.getMail())
-                .orElseThrow(() -> new DataNoteFoundException("Account not found"));
+    public Boolean deleteUser(String mail) throws DataNotFoundException, InsufficientFundsException {
+        log.info("deleting account of {} ",mail);
+        User userToDelete = userRepository.findByAccount_Mail(mail)
+                .orElseThrow(() -> new DataNotFoundException("Account not found"));
         if (userToDelete.getAccount().getBalance() != 0) {
             message = "account not empty balance =" + userToDelete.getAccount().getBalance();
             log.error(message);
-            throw new BalanceException(message);
+            throw new InsufficientFundsException(message);
         } else {
             userToDelete.removeAccount(userToDelete);
             userRepository.deleteById(userToDelete.getUserID());
@@ -43,15 +45,15 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public AccountDTO addUser(AccountDTO accountDTO) throws AlreadyExistsException {
-        log.info("saving account of {} {}", accountDTO.getFirstName(), accountDTO.getLastName());
-        if (userRepository.findByAccount_Mail(accountDTO.getMail()).isPresent()) {
+    public AccountDTO addUser(UserDTO newUserDTO) throws AlreadyExistsException {
+        log.info("saving account of {} {}", newUserDTO.getFirstName(), newUserDTO.getLastName());
+        if (userRepository.findByAccount_Mail(newUserDTO.getMail()).isPresent()) {
             message = "an account already exists with this email{} ";
-            log.error(message, accountDTO.getMail());
-            throw new AlreadyExistsException(message + accountDTO.getMail());
+            log.error(message, newUserDTO.getMail());
+            throw new AlreadyExistsException(message + newUserDTO.getMail());
         }
-        User newUser = new User(accountDTO.getFirstName(), accountDTO.getLastName(), accountDTO.getBirthDate());
-        Account newAccount = new Account(accountDTO.getMail(), accountDTO.getPassword(), newUser);
+        User newUser = new User(newUserDTO.getFirstName(), newUserDTO.getLastName(), newUserDTO.getBirthDate());
+        Account newAccount = new Account(newUserDTO.getMail(), newUserDTO.getPassword(), newUser);
         newUser.setAccount(newAccount);
         userRepository.save(newUser);
         return accountMapper.toAccountDTO(newAccount);
@@ -60,27 +62,27 @@ public class UserService implements IUserService {
     /**
      * update given account
      *
-     * @param accountToUpdate
+     * @param userToUpdate
      * @return
-     * @throws DataNoteFoundException
+     * @throws DataNotFoundException
      */
     @Override
-    public AccountDTO updateUser(AccountDTO accountToUpdate) throws DataNoteFoundException {
-        log.info("updating account of {} {}", accountToUpdate.getFirstName(), accountToUpdate.getLastName());
-        User user = userRepository.findByAccount_Mail(accountToUpdate.getMail()).get();
-        user.setFirstName(accountToUpdate.getFirstName());
-        user.setLastName(accountToUpdate.getLastName());
-        user.setBirthDate(accountToUpdate.getBirthDate());
-        user.getAccount().setPassword(accountToUpdate.getPassword());
-        user.getAccount().setMail(accountToUpdate.getMail());
+    public AccountDTO updateUser(UserDTO userToUpdate)  {
+        log.info("updating account of {} {}", userToUpdate.getFirstName(), userToUpdate.getLastName());
+        User user = userRepository.findByAccount_Mail(userToUpdate.getMail()).get();
+        user.setFirstName(userToUpdate.getFirstName());
+        user.setLastName(userToUpdate.getLastName());
+        user.setBirthDate(userToUpdate.getBirthDate());
+        user.getAccount().setPassword(userToUpdate.getPassword());
+        user.getAccount().setMail(userToUpdate.getMail());
         user = userRepository.save(user);
         return accountMapper.toAccountDTO(user.getAccount());
 
     }
 
     @Override
-    public AccountDTO getUser(String mail) throws DataNoteFoundException {
-        User user = userRepository.findByAccount_Mail(mail).orElseThrow(()-> new DataNoteFoundException("account not found"));
+    public AccountDTO getUser(String mail) throws DataNotFoundException {
+        User user = userRepository.findByAccount_Mail(mail).orElseThrow(()-> new DataNotFoundException("account not found"));
         return accountMapper.toAccountDTO(user.getAccount());
     }
 }

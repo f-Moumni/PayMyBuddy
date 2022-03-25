@@ -1,17 +1,16 @@
-package com.pmb.paymybuddy.service;
+package com.pmb.PayMyBuddy.service;
 
-import com.pmb.paymybuddy.DTO.AccountDTO;
-import com.pmb.paymybuddy.DTO.ContactDTO;
-import com.pmb.paymybuddy.exception.AlreadyExistsException;
-import com.pmb.paymybuddy.exception.DataNoteFoundException;
 
+
+import com.pmb.PayMyBuddy.DTO.AccountDTO;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface IAccountService {
 
 
-    AccountDTO getAccount(String mail) throws DataNoteFoundException;
+    AccountDTO getAccount(String mail) throws DataNotFoundException;
 
 
 

@@ -1,16 +1,24 @@
-package com.pmb.paymybuddy.service;
+package com.pmb.PayMyBuddy.service;
 
-import com.pmb.paymybuddy.DTO.ContactDTO;
-import com.pmb.paymybuddy.exception.AlreadyExistsException;
-import com.pmb.paymybuddy.exception.DataNoteFoundException;
+import com.pmb.PayMyBuddy.DTO.ContactDTO;
+import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 public interface IContactService {
-    ContactDTO getContact(String email) throws DataNoteFoundException;
+    ContactDTO getContact(String email) throws DataNotFoundException;
 
-    //to do : add contact to contact's list
-    boolean addContact(ContactDTO contactDTO, String mail) throws AlreadyExistsException;
 
-    boolean deleteContact(ContactDTO contactDTO, String ownerEmail);
+
+    boolean addContact(String contactMail, String ownerEmail) throws AlreadyExistsException;
+
+
+
+     Boolean deleteContact(String contactMail, String ownerEmail);
+
+
+    Set<ContactDTO> getContacts(String ownerEmail);
 }

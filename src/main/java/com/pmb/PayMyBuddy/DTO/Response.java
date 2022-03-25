@@ -1,4 +1,4 @@
-package com.pmb.paymybuddy.DTO;
+package com.pmb.PayMyBuddy.DTO;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

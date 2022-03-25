@@ -1,17 +1,21 @@
-package com.pmb.paymybuddy.service;
+package com.pmb.PayMyBuddy.service;
 
-import com.pmb.paymybuddy.DTO.PaymentDTO;
-import com.pmb.paymybuddy.DTO.TransactionDTO;
-import com.pmb.paymybuddy.DTO.TransferDTO;
-import com.pmb.paymybuddy.exception.BalanceException;
-import com.pmb.paymybuddy.exception.DataNoteFoundException;
+
+
+import com.pmb.PayMyBuddy.DTO.PaymentDTO;
+import com.pmb.PayMyBuddy.DTO.TransactionDTO;
+import com.pmb.PayMyBuddy.DTO.TransferDTO;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
+import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
+
 
 import java.util.Set;
 
 public interface ITransactionService {
-    boolean addPayment(PaymentDTO paymentDTO) throws BalanceException;
 
-    boolean addTransfer(TransferDTO transferToAdd) throws BalanceException, DataNoteFoundException;
+    boolean doPayment(PaymentDTO paymentDTO) throws InsufficientFundsException;
+
+    boolean doTransfer(TransferDTO transferToAdd) throws DataNotFoundException, InsufficientFundsException;
 
     Set<TransactionDTO> getAllTransactions(String email);
 }

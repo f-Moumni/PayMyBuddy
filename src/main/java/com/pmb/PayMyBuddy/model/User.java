@@ -1,7 +1,7 @@
-package com.pmb.paymybuddy.model;
+package com.pmb.PayMyBuddy.model;
 
 import lombok.*;
-import org.hibernate.type.StringNVarcharType;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -86,7 +86,7 @@ public class User {
 
     public void removeAccount(User user) {
         user.account.setActive(false);
-        user.account.setPassword("0000");
+        user.account.setPassword(null);
     }
 
     public void addContact(User user) {

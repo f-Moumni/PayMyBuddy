@@ -1,4 +1,4 @@
-package com.pmb.paymybuddy.model;
+package com.pmb.PayMyBuddy.model;
 
 import lombok.*;
 
@@ -34,12 +34,14 @@ public class BankAccount {
         this.swift = swift;
         this.owner = owner;
     }
+/*
 
-    @OneToMany(mappedBy = "creditBankAccount", cascade = {
+    @OneToMany(mappedBy = "bankAccount", cascade = {
             CascadeType.MERGE,
             CascadeType.PERSIST
     })
     private Set<Transfer> transactions = new TreeSet<>();
+*/
 
 
 

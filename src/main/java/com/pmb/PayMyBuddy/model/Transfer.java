@@ -1,4 +1,4 @@
-package com.pmb.paymybuddy.model;
+package com.pmb.PayMyBuddy.model;
 
 import lombok.*;
 
@@ -9,22 +9,21 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @NoArgsConstructor
-
-@DiscriminatorValue("transfer")
+@DiscriminatorValue("TRANSFER")
 public class Transfer extends Transaction {
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = {
-            CascadeType.MERGE,
-            CascadeType.PERSIST})
-    @JoinColumn(name = "credit_bankaccount")
-    private BankAccount creditBankAccount ;
+    @ManyToOne
+    @JoinColumn(name = "bankaccount")
+    private BankAccount bankAccount;
 
-    public Transfer(double amount, double fee, String description, LocalDateTime dateTime, Account debitAccount,BankAccount bankAccount) {
+    public Transfer(double amount, double fee, String description, LocalDateTime dateTime, Account debitAccount,Account creditAccount,BankAccount bankAccount) {
         this.setAmount(amount);
         this.setFee(fee);
         this.setDescription(description);
         this.setDateTime(dateTime);
         this.setDebitAccount(debitAccount);
-        this.setCreditBankAccount(bankAccount);
+        this.setBankAccount(bankAccount);
+        this.setCreditAccount(creditAccount);
     }
+
 }

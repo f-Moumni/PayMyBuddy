@@ -1,31 +1,44 @@
-package com.pmb.paymybuddy.util;
+package com.pmb.PayMyBuddy.util;
 
-import com.pmb.paymybuddy.DTO.TransactionDTO;
-import com.pmb.paymybuddy.model.Payment;
-import com.pmb.paymybuddy.model.Transfer;
+
+import com.pmb.PayMyBuddy.constants.OperationType;
+import com.pmb.PayMyBuddy.DTO.TransactionDTO;
+import com.pmb.PayMyBuddy.model.Account;
+import com.pmb.PayMyBuddy.model.BankAccount;
+import com.pmb.PayMyBuddy.model.Payment;
+import com.pmb.PayMyBuddy.model.Transfer;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionMapper {
 
+    private String name;
+    private String amount;
 
-    public TransactionDTO paymentSentMapper(Payment payment ){
+    public TransactionDTO PaymentMapper(Payment payment, OperationType operationType) {
+        Account debitAccount = payment.getDebitAccount();
+        Account creditAccount = payment.getCreditAccount();
+        if (operationType.equals(OperationType.DEBIT)) {
+            amount = "-" + payment.getAmount();
+            name = creditAccount.isActive() ?
+                    creditAccount.getAccountOwner().getFirstName() + " " + creditAccount.getAccountOwner().getLastName()
+                    : creditAccount.getMail();
 
-        return new TransactionDTO(payment.getDebitAccount().getAccountOwner().getFirstName() +" "
-                + payment.getDebitAccount().getAccountOwner().getLastName(),
-                payment.getDateTime(), payment.getDescription(),payment.getFee(),"-"+payment.getAmount());
-
+        } else {
+            name = debitAccount.isActive() ?
+                    debitAccount.getAccountOwner().getFirstName() + " " + debitAccount.getAccountOwner().getLastName()
+                    : debitAccount.getMail();
+            amount = "+" + payment.getAmount();
+        }
+        return new TransactionDTO(name, payment.getDateTime(), payment.getDescription(), amount);
     }
-    public TransactionDTO paymentReceivedMapper(Payment payment ) {
-        return new TransactionDTO((payment.getDebitAccount().isActive()) ?
-                payment.getCreditAccount().getAccountOwner().getFirstName() + " "
-                        + payment.getCreditAccount().getAccountOwner().getLastName() : payment.getCreditAccount().getMail(),
-                payment.getDateTime(), payment.getDescription(), payment.getFee(), "+" + payment.getAmount());
-    }
-    public TransactionDTO bankTransfers(Transfer transfer ) {
-        return new TransactionDTO(transfer.getCreditBankAccount().getIban(),
-                transfer.getDateTime(), transfer.getDescription(),transfer.getFee(),"+"+ transfer.getAmount());
-    }
 
+
+    public TransactionDTO transferMapper(Transfer transfer, OperationType operationType) {
+        BankAccount userBA = transfer.getBankAccount();
+        name = userBA.getIban();
+        return new TransactionDTO(name, transfer.getDateTime(), transfer.getDescription(),
+                (operationType.equals(OperationType.DEBIT)) ? "-" + transfer.getAmount():"+" + transfer.getAmount());
+    }
 
 }

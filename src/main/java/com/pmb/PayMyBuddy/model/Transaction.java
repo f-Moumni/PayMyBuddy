@@ -1,4 +1,4 @@
-package com.pmb.paymybuddy.model;
+package com.pmb.PayMyBuddy.model;
 
 import lombok.*;
 import javax.persistence.*;
@@ -50,6 +50,8 @@ public abstract class Transaction {
     @ManyToOne
     @JoinColumn(name = "debit_account")
     private Account debitAccount;
-
+    @ManyToOne
+    @JoinColumn(name = "credit_account")
+    private Account creditAccount ;
 
 }

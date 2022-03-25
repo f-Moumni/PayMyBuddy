@@ -1,4 +1,4 @@
-package com.pmb.paymybuddy.DTO;
+package com.pmb.PayMyBuddy.DTO;
 
 import lombok.Data;
 

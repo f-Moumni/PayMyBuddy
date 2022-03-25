@@ -1,21 +1,26 @@
-package com.pmb.paymybuddy.service;
+package com.pmb.PayMyBuddy.service;
 
-import com.pmb.paymybuddy.DTO.AccountDTO;
-import com.pmb.paymybuddy.exception.AlreadyExistsException;
-import com.pmb.paymybuddy.exception.BalanceException;
-import com.pmb.paymybuddy.exception.DataNoteFoundException;
-import com.pmb.paymybuddy.model.User;
+
+import com.pmb.PayMyBuddy.DTO.AccountDTO;
+import com.pmb.PayMyBuddy.DTO.UserDTO;
+import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
+
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
+
+import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface IUserService {
 
 
-    Boolean deleteUser(AccountDTO accountToDelete) throws DataNoteFoundException, BalanceException;
 
-    AccountDTO addUser(AccountDTO accountDTO) throws AlreadyExistsException;
 
-    AccountDTO updateUser(AccountDTO accountToUpdate) throws DataNoteFoundException;
+    Boolean deleteUser(String mail) throws DataNotFoundException, InsufficientFundsException;
 
-    AccountDTO getUser(String mail) throws DataNoteFoundException;
+    AccountDTO addUser(UserDTO newUserDTO) throws AlreadyExistsException;
+
+    AccountDTO updateUser(UserDTO userToUpdate) ;
+
+    AccountDTO getUser(String mail) throws DataNotFoundException;
 }
