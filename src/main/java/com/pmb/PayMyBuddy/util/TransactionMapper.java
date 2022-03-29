@@ -20,12 +20,12 @@ public class TransactionMapper {
         Account creditAccount = payment.getCreditAccount();
         if (operationType.equals(OperationType.DEBIT)) {
             amount = "-" + payment.getAmount();
-            name = creditAccount.isActive() ?
+            name = creditAccount.isEnabled() ?
                     creditAccount.getAccountOwner().getFirstName() + " " + creditAccount.getAccountOwner().getLastName()
                     : creditAccount.getMail();
 
         } else {
-            name = debitAccount.isActive() ?
+            name = debitAccount.isEnabled() ?
                     debitAccount.getAccountOwner().getFirstName() + " " + debitAccount.getAccountOwner().getLastName()
                     : debitAccount.getMail();
             amount = "+" + payment.getAmount();

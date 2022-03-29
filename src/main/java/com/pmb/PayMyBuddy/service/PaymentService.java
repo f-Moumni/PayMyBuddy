@@ -53,8 +53,8 @@ public class PaymentService {
         Account accountCredit = accountRepository.findByMail(paymentDTO.getCreditAccountEmail()).get();
         log.info("saving payment to {} {}", accountCredit.getAccountOwner().getFirstName(),
                 accountCredit.getAccountOwner().getLastName());
-        if (accountDebit.isActive() &&//account is active
-                accountCredit.isActive() && accountDebit.getAccountOwner().getContacts()
+        if (accountDebit.isEnabled() &&//account is active
+                accountCredit.isEnabled() && accountDebit.getAccountOwner().getContacts()
                 .contains(accountCredit.getAccountOwner())) {// credit account is in contact list
             fee = Calculator.feeCalculator(paymentDTO.getAmount());
             total = Calculator.totalCalculator(paymentDTO.getAmount());

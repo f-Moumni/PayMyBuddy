@@ -1,21 +1,25 @@
 package com.pmb.PayMyBuddy.model;
 
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode
 @Entity()
 @Table(name = "pmb_account")
-public class Account {
-
+public class Account implements UserDetails {
     /**
      * pay may buddy account's id
      **/
@@ -35,31 +39,36 @@ public class Account {
     /**
      * account's password
      */
-    @Column(name = "password")
     @NotBlank(message = "the password cannot be empty or null")
     private String password;
 
     /**
      * pay may buddy account's balance
      **/
-    @Column(name = "balance", nullable = false)
+    @Column( nullable = false)
     private double balance;
 
     /**
      * pay may buddy account's status
      **/
+    @Column( nullable = false)
+    private boolean enabled ;
 
-    @Column(name = "status")
-    private boolean active = true;
-
-
+    /**
+     * pay may buddy locked status
+     **/
+    @Column( nullable = false)
+    private boolean locked ;
     /**
      * pay may buddy account's owner
      **/
     @OneToOne
     @JoinColumn(name = "owner")
-    private User accountOwner;
+    private AppUser accountOwner;
 
+    @ManyToOne
+    @JoinColumn(name ="role")
+     private Role role ;
     /**
      * All payments received in pay may buddy account
      **/
@@ -92,39 +101,65 @@ public class Account {
             CascadeType.PERSIST
     }
     )
-    private Set<Transfer> transfers = new TreeSet<>();
-
-
+    private Set<Transfer> BankTransfer = new TreeSet<>();
     /**
      * Constructor
      * @param mail
      * @param password
      * @param accountOwner
      */
-    public Account(String mail, String password, User accountOwner) {
+    public Account(String mail, String password, AppUser accountOwner) {
         this.mail = mail;
         this.password = password;
         this.accountOwner = accountOwner;
     }
 
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
+        return Collections.singleton(authority);
+    }
+
+
+    @Override
+    public String getUsername() {
+        return mail;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !locked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
     /**
      * add new Received Payment
      *
-     * @param payment*/
+     * @param payment
 
     public void addReceivedPayments(Payment payment) {
         this.receivedPayments.add(payment);
         payment.setCreditAccount(this);
     }
-
+*/
     /**
      * add new sent Payment
      *
      * @param payment
-     */
+
     public void addPaymentsSent(Payment payment) {
         paymentsSent.add(payment);
         payment.setDebitAccount(this);
     }
-
+  */
 }

@@ -3,8 +3,8 @@ package com.pmb.PayMyBuddy.service;
 import com.pmb.PayMyBuddy.DTO.BankAccountDTO;
 import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 
+import com.pmb.PayMyBuddy.model.AppUser;
 import com.pmb.PayMyBuddy.model.BankAccount;
-import com.pmb.PayMyBuddy.model.User;
 import com.pmb.PayMyBuddy.repository.BankAccountRepository;
 import com.pmb.PayMyBuddy.repository.UserRepository;
 import com.pmb.PayMyBuddy.util.BankAccountMapper;
@@ -42,7 +42,7 @@ public class BankAccountService implements IBankAccountService {
 
     @Override
     public boolean addBankAccount(BankAccountDTO bankAccountToAdd, String email) {
-        User owner = userRepository.findByAccount_Mail(email).get();
+        AppUser owner = userRepository.findByAccount_Mail(email).get();
         // bankAccountRepository.findByOwner_Account_Mail(email).ifPresentOrElse();
         BankAccount newBankAccount = new BankAccount(bankAccountToAdd.getIban(), bankAccountToAdd.getSwift(), owner);
         bankAccountRepository.save(newBankAccount);

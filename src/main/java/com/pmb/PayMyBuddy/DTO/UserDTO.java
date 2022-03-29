@@ -1,5 +1,7 @@
 package com.pmb.PayMyBuddy.DTO;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.pmb.PayMyBuddy.util.DateHandler;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +17,7 @@ import java.time.LocalDate;
 public class UserDTO {
     private String firstName;
     private String lastName;
+    @JsonDeserialize(using = DateHandler.class)
     private LocalDate birthDate;
     @Email(message = "invalid email ")
     private String mail;

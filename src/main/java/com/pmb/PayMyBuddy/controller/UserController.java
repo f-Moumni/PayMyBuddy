@@ -20,13 +20,13 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = "account")
+@RequestMapping(value = "api")
 public class UserController {
     @Autowired
     private UserService userService;
 
 
-    @GetMapping
+    @GetMapping(name ="account")
     public ResponseEntity<Response> GetAccount(@RequestParam @Valid String mail) throws DataNotFoundException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
@@ -37,7 +37,7 @@ public class UserController {
                         .build());
     }
 
-    @PutMapping
+    @PutMapping(name ="account")
     public ResponseEntity<Response> updateUserAccount(@RequestBody @Valid UserDTO accountToUpdate) {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
@@ -48,7 +48,7 @@ public class UserController {
                         .build());
     }
 
-    @PostMapping
+    @PostMapping("registration")
     public ResponseEntity<Response> SaveUserAccount(@RequestBody @Valid UserDTO account) throws AlreadyExistsException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
@@ -59,7 +59,7 @@ public class UserController {
                         .build());
     }
 
-    @DeleteMapping
+    @DeleteMapping(name ="account")
     public ResponseEntity<Response> deleteUser(@RequestParam @Valid String mail) throws DataNotFoundException, InsufficientFundsException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
