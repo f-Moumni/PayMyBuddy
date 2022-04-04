@@ -20,13 +20,14 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = "api")
+@RequestMapping(value = "/api")
+//@CrossOrigin
 public class UserController {
     @Autowired
     private UserService userService;
 
 
-    @GetMapping(name ="account")
+    @GetMapping("/account")
     public ResponseEntity<Response> GetAccount(@RequestParam @Valid String mail) throws DataNotFoundException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
@@ -37,7 +38,7 @@ public class UserController {
                         .build());
     }
 
-    @PutMapping(name ="account")
+    @PutMapping("account")
     public ResponseEntity<Response> updateUserAccount(@RequestBody @Valid UserDTO accountToUpdate) {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
@@ -59,7 +60,7 @@ public class UserController {
                         .build());
     }
 
-    @DeleteMapping(name ="account")
+    @DeleteMapping("account")
     public ResponseEntity<Response> deleteUser(@RequestParam @Valid String mail) throws DataNotFoundException, InsufficientFundsException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())

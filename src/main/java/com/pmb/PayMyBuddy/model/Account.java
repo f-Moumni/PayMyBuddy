@@ -3,6 +3,7 @@ package com.pmb.PayMyBuddy.model;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -19,7 +20,7 @@ import java.util.TreeSet;
 @EqualsAndHashCode
 @Entity()
 @Table(name = "pmb_account")
-public class Account implements UserDetails {
+public class Account   {
     /**
      * pay may buddy account's id
      **/
@@ -51,13 +52,12 @@ public class Account implements UserDetails {
     /**
      * pay may buddy account's status
      **/
-    @Column( nullable = false)
     private boolean enabled ;
 
     /**
      * pay may buddy locked status
      **/
-    @Column( nullable = false)
+
     private boolean locked ;
     /**
      * pay may buddy account's owner
@@ -115,32 +115,7 @@ public class Account implements UserDetails {
     }
 
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
-        return Collections.singleton(authority);
-    }
 
-
-    @Override
-    public String getUsername() {
-        return mail;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return !locked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
 
     /**
      * add new Received Payment

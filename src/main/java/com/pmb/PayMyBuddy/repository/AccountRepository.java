@@ -13,5 +13,6 @@ import java.util.Optional;
 public interface AccountRepository extends CrudRepository<Account,Long> {
 
      Optional<Account> findByMail (String mail);
+     Boolean existsByMail(String mail);
 
 }
