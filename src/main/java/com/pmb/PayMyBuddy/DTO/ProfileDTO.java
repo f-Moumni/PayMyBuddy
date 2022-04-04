@@ -2,10 +2,7 @@ package com.pmb.PayMyBuddy.DTO;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pmb.PayMyBuddy.util.DateHandler;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
@@ -14,13 +11,15 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class ProfileDTO {
+
     private String firstName;
     private String lastName;
     @JsonDeserialize(using = DateHandler.class)
     private LocalDate birthDate;
-    @Email(message = "invalid email ")
+    @Email
     private String mail;
-    private String password;
+    private double balance;
+
 
 }

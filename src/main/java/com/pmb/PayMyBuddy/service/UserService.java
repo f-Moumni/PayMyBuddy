@@ -1,8 +1,8 @@
 package com.pmb.PayMyBuddy.service;
 
 
-import com.pmb.PayMyBuddy.DTO.AccountDTO;
-import com.pmb.PayMyBuddy.DTO.UserDTO;
+import com.pmb.PayMyBuddy.DTO.ProfileDTO;
+import com.pmb.PayMyBuddy.DTO.SignupDTO;
 import com.pmb.PayMyBuddy.constants.Roles;
 import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
 import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
@@ -13,7 +13,6 @@ import com.pmb.PayMyBuddy.repository.RoleRepository;
 import com.pmb.PayMyBuddy.repository.UserRepository;
 import com.pmb.PayMyBuddy.security.PasswordEncoder;
 import com.pmb.PayMyBuddy.util.AccountMapper;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,15 +59,15 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public AccountDTO addUser(UserDTO newUserDTO) throws AlreadyExistsException {
-        log.info("saving account of {} {}", newUserDTO.getFirstName(), newUserDTO.getLastName());
-        if (userRepository.findByAccount_Mail(newUserDTO.getMail()).isPresent()) {
+    public ProfileDTO addUser(SignupDTO newSignupDTO) throws AlreadyExistsException {
+        log.info("saving account of {} {}", newSignupDTO.getFirstName(), newSignupDTO.getLastName());
+        if (userRepository.findByAccount_Mail(newSignupDTO.getMail()).isPresent()) {
             message = "an account already exists with this email{} ";
-            log.error(message, newUserDTO.getMail());
-            throw new AlreadyExistsException(message + newUserDTO.getMail());
+            log.error(message, newSignupDTO.getMail());
+            throw new AlreadyExistsException(message + newSignupDTO.getMail());
         }
-        AppUser newAppUser = new AppUser(newUserDTO.getFirstName(), newUserDTO.getLastName(), newUserDTO.getBirthDate());
-        Account newAccount = new Account(newUserDTO.getMail(), passwordEncoder.bCryptPasswordEncoder().encode(newUserDTO.getPassword()), newAppUser);
+        AppUser newAppUser = new AppUser(newSignupDTO.getFirstName(), newSignupDTO.getLastName(), newSignupDTO.getBirthDate());
+        Account newAccount = new Account(newSignupDTO.getMail(), passwordEncoder.bCryptPasswordEncoder().encode(newSignupDTO.getPassword()), newAppUser);
         newAccount.setRole(roleRepository.findByName(String.valueOf(Roles.USER)));
         newAppUser.setAccount(newAccount);
 
@@ -84,7 +83,7 @@ public class UserService implements IUserService {
      * @throws DataNotFoundException
      */
     @Override
-    public AccountDTO updateUser(UserDTO userToUpdate) {
+    public ProfileDTO updateUser(SignupDTO userToUpdate) {
         log.info("updating account of {} {}", userToUpdate.getFirstName(), userToUpdate.getLastName());
         AppUser appUser = userRepository.findByAccount_Mail(userToUpdate.getMail()).get();
         appUser.setFirstName(userToUpdate.getFirstName());
@@ -98,7 +97,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public AccountDTO getUser(String mail) throws DataNotFoundException {
+    public ProfileDTO getUser(String mail) throws DataNotFoundException {
         AppUser appUser = userRepository.findByAccount_Mail(mail).orElseThrow(() -> new DataNotFoundException("account not found"));
         return accountMapper.toAccountDTO(appUser.getAccount());
     }

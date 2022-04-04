@@ -1,7 +1,7 @@
 package com.pmb.PayMyBuddy.util;
 
 
-import com.pmb.PayMyBuddy.DTO.AccountDTO;
+import com.pmb.PayMyBuddy.DTO.ProfileDTO;
 import com.pmb.PayMyBuddy.DTO.ContactDTO;
 import com.pmb.PayMyBuddy.model.Account;
 import org.springframework.stereotype.Component;
@@ -10,10 +10,9 @@ import org.springframework.stereotype.Component;
 public class AccountMapper {
 
 
-    public AccountDTO toAccountDTO(Account account) {
-        return new AccountDTO(account.getAccountOwner().getFirstName(), account.getAccountOwner().getLastName(),
-                account.getAccountOwner().getBirthDate(),
-                account.getMail(), account.getPassword(), account.getBalance());
+    public ProfileDTO toAccountDTO(Account account) {
+        return new ProfileDTO(account.getAccountOwner().getFirstName(), account.getAccountOwner().getLastName(),
+                account.getAccountOwner().getBirthDate(),account.getMail(), account.getBalance());
 
     }
     public ContactDTO toContactDTO(Account account){

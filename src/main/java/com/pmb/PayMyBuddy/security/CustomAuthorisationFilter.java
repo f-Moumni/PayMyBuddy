@@ -1,3 +1,4 @@
+/*
 package com.pmb.PayMyBuddy.security;
 
 import com.auth0.jwt.JWT;
@@ -26,7 +27,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 public class CustomAuthorisationFilter extends OncePerRequestFilter {
-
+*/
+/*
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (request.getServletPath().equals("/login")) {
@@ -62,3 +64,4 @@ public class CustomAuthorisationFilter extends OncePerRequestFilter {
         }
     }
 }
+*/

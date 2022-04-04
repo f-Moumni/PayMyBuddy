@@ -2,7 +2,7 @@ package com.pmb.PayMyBuddy.controller;
 
 
 import com.pmb.PayMyBuddy.DTO.Response;
-import com.pmb.PayMyBuddy.DTO.UserDTO;
+import com.pmb.PayMyBuddy.DTO.SignupDTO;
 import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
 import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
@@ -28,7 +28,7 @@ public class UserController {
 
 
     @GetMapping("/account")
-    public ResponseEntity<Response> GetAccount(@RequestParam @Valid String mail) throws DataNotFoundException {
+    public ResponseEntity<Response> GetProfile(@RequestParam @Valid String mail) throws DataNotFoundException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("account", userService.getUser(mail)))
@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PutMapping("account")
-    public ResponseEntity<Response> updateUserAccount(@RequestBody @Valid UserDTO accountToUpdate) {
+    public ResponseEntity<Response> updateUserAccount(@RequestBody @Valid SignupDTO accountToUpdate) {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("account", userService.updateUser(accountToUpdate)))
@@ -49,8 +49,8 @@ public class UserController {
                         .build());
     }
 
-    @PostMapping("registration")
-    public ResponseEntity<Response> SaveUserAccount(@RequestBody @Valid UserDTO account) throws AlreadyExistsException {
+    @PostMapping("sign-up")
+    public ResponseEntity<Response> SaveUserAccount(@RequestBody @Valid SignupDTO account) throws AlreadyExistsException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("account", userService.addUser(account)))

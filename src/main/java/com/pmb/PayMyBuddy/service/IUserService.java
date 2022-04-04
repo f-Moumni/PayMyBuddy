@@ -1,8 +1,8 @@
 package com.pmb.PayMyBuddy.service;
 
 
-import com.pmb.PayMyBuddy.DTO.AccountDTO;
-import com.pmb.PayMyBuddy.DTO.UserDTO;
+import com.pmb.PayMyBuddy.DTO.ProfileDTO;
+import com.pmb.PayMyBuddy.DTO.SignupDTO;
 import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
 
 import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
@@ -14,13 +14,11 @@ import org.springframework.stereotype.Service;
 public interface IUserService {
 
 
-
-
     Boolean deleteUser(String mail) throws DataNotFoundException, InsufficientFundsException;
 
-    AccountDTO addUser(UserDTO newUserDTO) throws AlreadyExistsException;
+    ProfileDTO addUser(SignupDTO newSignupDTO) throws AlreadyExistsException;
 
-    AccountDTO updateUser(UserDTO userToUpdate) ;
+    ProfileDTO updateUser(SignupDTO userToUpdate) ;
 
-    AccountDTO getUser(String mail) throws DataNotFoundException;
+    ProfileDTO getUser(String mail) throws DataNotFoundException;
 }
