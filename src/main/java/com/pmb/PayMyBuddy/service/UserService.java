@@ -12,6 +12,7 @@ import com.pmb.PayMyBuddy.model.AppUser;
 import com.pmb.PayMyBuddy.repository.RoleRepository;
 import com.pmb.PayMyBuddy.repository.UserRepository;
 import com.pmb.PayMyBuddy.security.PasswordEncoder;
+import com.pmb.PayMyBuddy.security.PrincipalUser;
 import com.pmb.PayMyBuddy.util.AccountMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,7 @@ public class UserService implements IUserService {
         newAppUser.setAccount(newAccount);
 
         userRepository.save(newAppUser);
-        return accountMapper.toAccountDTO(newAccount);
+        return accountMapper.toProfileDTO(newAccount);
     }
 
     /**
@@ -86,20 +87,20 @@ public class UserService implements IUserService {
     @Override
     public ProfileDTO updateUser(SignupDTO userToUpdate) {
         log.info("updating account of {} {}", userToUpdate.getFirstName(), userToUpdate.getLastName());
-        AppUser appUser = userRepository.findByAccount_Mail(userToUpdate.getMail()).get();
+        AppUser appUser = userRepository.findByAccount_Mail(PrincipalUser.getCurrentUserMail()).get();
         appUser.setFirstName(userToUpdate.getFirstName());
         appUser.setLastName(userToUpdate.getLastName());
         appUser.setBirthDate(userToUpdate.getBirthDate());
         appUser.getAccount().setPassword(passwordEncoder.bCryptPasswordEncoder().encode(userToUpdate.getPassword()));
         appUser.getAccount().setMail(userToUpdate.getMail());
         appUser = userRepository.save(appUser);
-        return accountMapper.toAccountDTO(appUser.getAccount());
+        return accountMapper.toProfileDTO(appUser.getAccount());
 
     }
 
     @Override
     public ProfileDTO getUser(String mail) throws DataNotFoundException {
         AppUser appUser = userRepository.findByAccount_Mail(mail).orElseThrow(() -> new DataNotFoundException("account not found"));
-        return accountMapper.toAccountDTO(appUser.getAccount());
+        return accountMapper.toProfileDTO(appUser.getAccount());
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class AccountMapper {
 
 
-    public ProfileDTO toAccountDTO(Account account) {
+    public ProfileDTO toProfileDTO(Account account) {
         return new ProfileDTO(account.getAccountOwner().getFirstName(), account.getAccountOwner().getLastName(),
                 account.getAccountOwner().getBirthDate(),account.getMail(), account.getBalance());
 

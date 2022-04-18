@@ -62,10 +62,10 @@ public class UserController {
     }
 
     @DeleteMapping("account")
-    public ResponseEntity<Response> deleteUser(@RequestParam @Valid String mail) throws DataNotFoundException, InsufficientFundsException {
+    public ResponseEntity<Response> deleteUser() throws DataNotFoundException, InsufficientFundsException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("account", userService.deleteUser(mail)))
+                        .data(Map.of("account", userService.deleteUser(PrincipalUser.getCurrentUserMail())))
                         .message("Account deleted")
                         .status(OK)
                         .statusCode(OK.value())
