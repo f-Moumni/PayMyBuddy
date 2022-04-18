@@ -1,14 +1,20 @@
 package com.pmb.PayMyBuddy.DTO;
 
-import lombok.Data;
 
-@Data
 public class BankAccountDTO {
-    private String Iban;
+    private String iban;
     private String swift;
 
+    public String getIban() {
+        return iban;
+    }
+
+    public String getSwift() {
+        return swift;
+    }
+
     public BankAccountDTO(String iban, String swift) {
-        Iban = iban;
+        this.iban = iban;
         this.swift = swift;
     }
 }

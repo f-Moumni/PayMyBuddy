@@ -57,11 +57,6 @@ public class Account   {
     /**
      * pay may buddy locked status
      **/
-
-    private boolean locked ;
-    /**
-     * pay may buddy account's owner
-     **/
     @OneToOne
     @JoinColumn(name = "owner")
     private AppUser accountOwner;

@@ -9,6 +9,7 @@ import com.pmb.PayMyBuddy.model.Payment;
 import com.pmb.PayMyBuddy.repository.AccountRepository;
 import com.pmb.PayMyBuddy.repository.PaymentRepository;
 import com.pmb.PayMyBuddy.repository.TransferRepository;
+import com.pmb.PayMyBuddy.security.PrincipalUser;
 import com.pmb.PayMyBuddy.util.Calculator;
 import com.pmb.PayMyBuddy.util.TransactionMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +50,7 @@ public class PaymentService {
 
     public boolean doPayment(PaymentDTO paymentDTO) throws InsufficientFundsException {
 
-        Account accountDebit = accountRepository.findByMail(paymentDTO.getDebitAccountEmail()).get();
+        Account accountDebit = accountRepository.findByMail(PrincipalUser.getCurrentUserMail()).get();
         Account accountCredit = accountRepository.findByMail(paymentDTO.getCreditAccountEmail()).get();
         log.info("saving payment to {} {}", accountCredit.getAccountOwner().getFirstName(),
                 accountCredit.getAccountOwner().getLastName());
@@ -75,7 +76,7 @@ public class PaymentService {
     }
 
     public List<TransactionDTO> getSentPayments(String email) {
-       // Account userAccount = accountRepository.findByMail(email).get();
+
         List<Payment> payments = new ArrayList<>();
         paymentRepository.findByDebitAccount(email).forEach(payments::add);
         return payments.stream()
@@ -86,7 +87,6 @@ public class PaymentService {
     public List<TransactionDTO> getReceivedPayments(String email) {
         List<Payment> payments = new ArrayList<>();
         paymentRepository.findByCreditAccount(email).forEach(payments::add);
-       // Account userAccount = accountRepository.findByMail(email).get();
         return payments.stream()
                 .map(payment -> transactionMapper.PaymentMapper(payment, OperationType.CREDIT))
                 .collect(Collectors.toList());

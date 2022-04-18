@@ -5,7 +5,9 @@ import com.pmb.PayMyBuddy.DTO.BankAccountDTO;
 import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 
 public interface IBankAccountService {
-    BankAccountDTO getBankAccount(String email) throws DataNotFoundException;
+    BankAccountDTO getBankAccount() throws DataNotFoundException;
 
-    boolean addBankAccount(BankAccountDTO bankAccountToAdd, String email);
+    boolean addBankAccount(BankAccountDTO bankAccountToAdd);
+
+    boolean updateBankAccount(BankAccountDTO bankAccountToAdd);
 }

@@ -13,7 +13,7 @@ public interface IContactService {
 
 
 
-    boolean addContact(String contactMail, String ownerEmail) throws AlreadyExistsException;
+    ContactDTO addContact(String contactMail, String ownerEmail) throws AlreadyExistsException, DataNotFoundException;
 
 
 

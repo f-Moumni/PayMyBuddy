@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(DataNotFoundException.class)
+   @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<Object> handleDataNotFoundException(
             DataNotFoundException e, WebRequest request) {
 
@@ -22,7 +21,7 @@ public class GlobalExceptionHandler {
 
     }
 
-    @ExceptionHandler(InsufficientFundsException.class)
+   @ExceptionHandler(InsufficientFundsException.class)
     public ResponseEntity<Object> handleInsufficientFundsException(
             InsufficientFundsException e, WebRequest request) {
 
@@ -32,7 +31,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(exception, HttpStatus.CONFLICT);
 
     }
-    @ExceptionHandler(BalanceNotEmptyException.class)
+  @ExceptionHandler(BalanceNotEmptyException.class)
     public ResponseEntity<Object> handleBalanceNotEmptyException(
             BalanceNotEmptyException e, WebRequest request) {
 

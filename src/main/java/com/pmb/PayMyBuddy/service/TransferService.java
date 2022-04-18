@@ -14,6 +14,7 @@ import com.pmb.PayMyBuddy.model.Transfer;
 import com.pmb.PayMyBuddy.repository.AccountRepository;
 
 import com.pmb.PayMyBuddy.repository.TransferRepository;
+import com.pmb.PayMyBuddy.security.PrincipalUser;
 import com.pmb.PayMyBuddy.util.Calculator;
 import com.pmb.PayMyBuddy.util.TransactionMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class TransferService {
      */
 
     public boolean doTransfer(TransferDTO transferToAdd) throws DataNotFoundException, InsufficientFundsException {
-        Account account = accountRepository.findByMail(transferToAdd.getAccountEmail()).get();
+        Account account = accountRepository.findByMail(PrincipalUser.getCurrentUserMail()).get();
         log.info("saving transfer for {}", account.getAccountOwner().getFirstName());
         if (account.getAccountOwner().getBankAccount() == null) { //bank account verification
             log.error("no bank account attached to this account ");
@@ -84,28 +85,16 @@ public class TransferService {
      */
 
     public List<TransactionDTO> getSentTransfers(String email) {
-       // Account userAccount = accountRepository.findByMail(email).get();
+
         List<Transfer>  transfers = new ArrayList<>();
         transferRepository.findByDebitAccount(email).forEach(transfers::add);
         return transfers.stream()
                 .map(transfer -> transactionMapper.transferMapper(transfer, OperationType.DEBIT)).collect(Collectors.toList());
-        /*List<Payment> sent = new ArrayList<>(), received = new ArrayList<>();
-        //   paymentRepository.findByDebitAccount(email).forEach(sent::add);
-        //  paymentRepository.findByCreditAccount(email).forEach(received::add);
-        List<Transfer> transfers = new ArrayList<>();
-        transferRepository.findByDebitAccount(email).forEach(transfers::add);
-        // mapping sent payments to TransactionDTO
-        List<TransactionDTO> paymentSent = sent.stream().map(transactionMapper::paymentSentMapper).collect(Collectors.toList());
-        // mapping received payments to TransactionDTO
-        List<TransactionDTO> paymentsReceived = received.stream().map(transactionMapper::paymentReceivedMapper).collect(Collectors.toList());
-        // mapping bank transactions to TransactionDTO
-        List<TransactionDTO> bankTransfers = transfers.stream().map(transactionMapper::bankTransfers).collect(Collectors.toList());
-        List<TransactionDTO> result = Stream.concat(paymentSent.stream(), paymentsReceived.stream()).collect(Collectors.toList());
-        return Stream.concat(result.stream(), bankTransfers.stream()).collect(Collectors.toSet());*/
+
     }
 
     public List<TransactionDTO> getReservedTransfers(String email) {
-      //  Account userAccount = accountRepository.findByMail(email).get();
+
         List<Transfer>  transfers = new ArrayList<>();
         transferRepository.findByCreditAccount(email).forEach(transfers::add);
         return transfers.stream()

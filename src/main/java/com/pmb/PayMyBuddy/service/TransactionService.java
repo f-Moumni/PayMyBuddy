@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,8 +21,8 @@ public class TransactionService {
     TransferService transferService;
 
 
-    public Set<TransactionDTO> getAllTransactions(String email) {
+    public List<TransactionDTO> getAllTransactions(String email) {
         return Stream.concat(paymentService.getAllPayments(email).stream(),transferService.getAllTransfers(email).stream()
-        ).collect(Collectors.toSet());
+        ).collect(Collectors.toList());
     }
 }

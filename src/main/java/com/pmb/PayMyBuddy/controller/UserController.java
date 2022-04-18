@@ -6,6 +6,7 @@ import com.pmb.PayMyBuddy.DTO.SignupDTO;
 import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
 import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
+import com.pmb.PayMyBuddy.security.PrincipalUser;
 import com.pmb.PayMyBuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +21,18 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = "/api")
-//@CrossOrigin
+@RequestMapping(value = "api")
+@CrossOrigin(origins = "*")
 public class UserController {
     @Autowired
     private UserService userService;
 
 
-    @GetMapping("/account")
-    public ResponseEntity<Response> GetProfile(@RequestParam @Valid String mail) throws DataNotFoundException {
+    @GetMapping("account")
+    public ResponseEntity<Response> GetProfile() throws DataNotFoundException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("account", userService.getUser(mail)))
+                        .data(Map.of("account", userService.getUser(PrincipalUser.getCurrentUserMail())))
                         .message("Account retrieved")
                         .status(OK)
                         .statusCode(OK.value())

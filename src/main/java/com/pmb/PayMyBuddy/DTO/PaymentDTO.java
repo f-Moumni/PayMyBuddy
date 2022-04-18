@@ -11,17 +11,12 @@ import java.time.LocalDateTime;
 
 @Data
 public class PaymentDTO {
-
-    private String debitAccountEmail;
-
     private String creditAccountEmail;
-
     private double amount;
     @NotNull
     private String description;
 
-    public PaymentDTO(String debitAccountEmail, String creditAccountEmail, double amount, String description) {
-        this.debitAccountEmail = debitAccountEmail;
+    public PaymentDTO( String creditAccountEmail, double amount, String description) {
         this.creditAccountEmail = creditAccountEmail;
         this.amount = amount;
         this.description = description;

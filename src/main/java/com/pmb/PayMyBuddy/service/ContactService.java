@@ -56,18 +56,18 @@ public class ContactService implements IContactService {
      */
 
     @Override
-    public boolean addContact(String contactMail, String ownerEmail) throws AlreadyExistsException {
+    public ContactDTO addContact(String contactMail, String ownerEmail) throws AlreadyExistsException, DataNotFoundException {
 
         log.info("adding contact with email {}", contactMail);
         AppUser owner = userRepository.findByAccount_Mail(ownerEmail).get();
-        AppUser contact = userRepository.findByAccount_Mail(contactMail).get();
+        AppUser contact = userRepository.findByAccount_Mail(contactMail).orElseThrow( () -> new DataNotFoundException("no account found with email address " + contactMail));
         if (owner.getContacts().contains(contact)){
             log.error("{} is already in contact",contactMail);
             throw new AlreadyExistsException("contact already saved");
         }
         owner.addContact(contact);
         userRepository.save(owner);
-        return true;
+        return accountMapper.toContactDTO(contact.getAccount());
     }
 
 

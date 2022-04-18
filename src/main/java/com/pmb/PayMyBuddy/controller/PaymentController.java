@@ -4,6 +4,7 @@ import com.pmb.PayMyBuddy.DTO.PaymentDTO;
 import com.pmb.PayMyBuddy.DTO.Response;
 import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
+import com.pmb.PayMyBuddy.security.PrincipalUser;
 import com.pmb.PayMyBuddy.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,36 +18,37 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/payment")
 public class PaymentController {
     @Autowired
     PaymentService paymentService;
 
     @GetMapping("/sent")
-    public ResponseEntity<Response> getSentPayment(@RequestParam @Valid String mail)  {
+    public ResponseEntity<Response> getSentPayment()  {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("payment", paymentService.getSentPayments(mail)))
+                        .data(Map.of("payment", paymentService.getSentPayments(PrincipalUser.getCurrentUserMail())))
                         .message(" retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
     }
-    @GetMapping("/Received")
-    public ResponseEntity<Response> getReceivedPayment(@RequestParam @Valid String mail)  {
+    @GetMapping("/received")
+    public ResponseEntity<Response> getReceivedPayment()  {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("payment", paymentService.getReceivedPayments(mail)))
+                        .data(Map.of("payment", paymentService.getReceivedPayments(PrincipalUser.getCurrentUserMail())))
                         .message(" retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
     }
-    @GetMapping("/ALL")
-    public ResponseEntity<Response> getAllPayment(@RequestParam @Valid String mail)  {
+    @GetMapping("/all")
+    public ResponseEntity<Response> getAllPayment()  {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("payment", paymentService.getAllPayments(mail)))
+                        .data(Map.of("transactions", paymentService.getAllPayments(PrincipalUser.getCurrentUserMail())))
                         .message(" all retrieved")
                         .status(OK)
                         .statusCode(OK.value())

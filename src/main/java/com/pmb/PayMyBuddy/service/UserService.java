@@ -59,16 +59,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ProfileDTO addUser(SignupDTO newSignupDTO) throws AlreadyExistsException {
-        log.info("saving account of {} {}", newSignupDTO.getFirstName(), newSignupDTO.getLastName());
-        if (userRepository.findByAccount_Mail(newSignupDTO.getMail()).isPresent()) {
-            message = "an account already exists with this email{} ";
-            log.error(message, newSignupDTO.getMail());
-            throw new AlreadyExistsException(message + newSignupDTO.getMail());
+    public ProfileDTO addUser(SignupDTO newUser) throws AlreadyExistsException {
+        log.info("saving account of {} {}", newUser.getFirstName(), newUser.getLastName());
+        if (userRepository.findByAccount_Mail(newUser.getMail()).isPresent()) {
+            message = "an account already exists with this email";
+            log.error(message, newUser.getMail());
+            throw new AlreadyExistsException(message + newUser.getMail());
         }
-        AppUser newAppUser = new AppUser(newSignupDTO.getFirstName(), newSignupDTO.getLastName(), newSignupDTO.getBirthDate());
-        Account newAccount = new Account(newSignupDTO.getMail(), passwordEncoder.bCryptPasswordEncoder().encode(newSignupDTO.getPassword()), newAppUser);
+        AppUser newAppUser = new AppUser(newUser.getFirstName(), newUser.getLastName(), newUser.getBirthDate());
+        Account newAccount = new Account(newUser.getMail(), passwordEncoder.bCryptPasswordEncoder().encode(newUser.getPassword()), newAppUser);
         newAccount.setRole(roleRepository.findByName(String.valueOf(Roles.USER)));
+        newAccount.setEnabled(true);
         newAppUser.setAccount(newAccount);
 
         userRepository.save(newAppUser);
