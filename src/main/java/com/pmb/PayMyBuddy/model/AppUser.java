@@ -15,7 +15,7 @@ import java.util.TreeSet;
 @AllArgsConstructor
 @Entity()
 @Table(name = "user")
-public class User {
+public class AppUser {
     /**
      * use id
      **/
@@ -76,26 +76,27 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "contact_id")
     )
 
-    private Set<User> contacts = new TreeSet<>();
+    private Set<AppUser> contacts = new TreeSet<>();
 
-    public User(String firstName, String lastName, LocalDate birthDate) {
+    public AppUser(String firstName, String lastName, LocalDate birthDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
     }
 
-    public void removeAccount(User user) {
-        user.account.setActive(false);
-        user.account.setPassword(null);
+    public void removeAccount(AppUser appUser) {
+        appUser.account.setEnabled(false);
+        appUser.account.setPassword(null);
+        appUser.account.setRole(null);
     }
 
-    public void addContact(User user) {
-        user.getContacts().add(this);
-        contacts.add(user);
+   public void addContact(AppUser appUser) {
+        appUser.getContacts().add(this);
+        contacts.add(appUser);
     }
 
-    public void removeContact(User user) {
-        user.getContacts().remove(this);
-        contacts.remove(user);
+    public void removeContact(AppUser appUser) {
+        appUser.getContacts().remove(this);
+        contacts.remove(appUser);
     }
 }

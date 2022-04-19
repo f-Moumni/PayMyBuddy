@@ -4,8 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.Set;
-import java.util.TreeSet;
 
 @Getter
 @Setter
@@ -27,9 +25,9 @@ public class BankAccount {
             CascadeType.PERSIST
     })
     @JoinColumn(name = "owner")
-    private User owner;
+    private AppUser owner;
 
-    public BankAccount(String iban, String swift, User owner) {
+    public BankAccount(String iban, String swift, AppUser owner) {
         this.iban = iban;
         this.swift = swift;
         this.owner = owner;
