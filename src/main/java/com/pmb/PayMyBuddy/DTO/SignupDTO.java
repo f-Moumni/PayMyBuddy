@@ -2,10 +2,7 @@ package com.pmb.PayMyBuddy.DTO;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pmb.PayMyBuddy.util.DateHandler;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 import javax.validation.constraints.Email;
 import java.time.LocalDate;

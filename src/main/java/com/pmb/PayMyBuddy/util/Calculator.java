@@ -2,16 +2,18 @@ package com.pmb.PayMyBuddy.util;
 
 
 
-import static com.pmb.PayMyBuddy.constants.Constants.FEE_PERCENTAGE;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import static com.pmb.PayMyBuddy.constants.Constants.FEE_PERCENTAGE;
+@Service
 public class Calculator {
 
-    public static double feeCalculator( double amount){
-
+    public  double feeCalculator( double amount){
         return (amount* FEE_PERCENTAGE) / 100;
     }
 
-    public static double totalCalculator(double amount){
+    public  double totalCalculator(double amount){
         return feeCalculator(amount)+amount;
     }
 }

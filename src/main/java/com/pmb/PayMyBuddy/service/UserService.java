@@ -86,7 +86,6 @@ public class UserService implements IUserService {
     @Override
     public ProfileDTO updateUser(SignupDTO userToUpdate) {
         log.info("updating account of {} {}", userToUpdate.getFirstName(), userToUpdate.getLastName());
-
         AppUser appUser = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).get();
         appUser.setFirstName(userToUpdate.getFirstName());
         appUser.setLastName(userToUpdate.getLastName());
@@ -103,6 +102,5 @@ public class UserService implements IUserService {
     @Override
     public ProfileDTO getUser() throws DataNotFoundException {
         AppUser appUser = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).orElseThrow(() -> new DataNotFoundException("account not found"));
-        return accountMapper.toProfileDTO(appUser.getAccount());
-    }
+        return accountMapper.toProfileDTO(appUser.getAccount());}
 }

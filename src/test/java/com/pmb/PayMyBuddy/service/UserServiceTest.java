@@ -49,7 +49,7 @@ public class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
-    private static AppUser user;
+    private AppUser user;
     private Account account;
     private Role role;
     private ProfileDTO profileDTO;
@@ -70,7 +70,7 @@ public class UserServiceTest {
         user = new AppUser(1, "john", "doe", LocalDate.now().minusYears(25), account);
         profileDTO = new ProfileDTO("john", "doe", LocalDate.now().minusYears(25), "john@exemple.fr", 0);
         signupDTO = new SignupDTO("john", "doe", LocalDate.now().minusYears(25), "john@exemple.fr", "password");
-        when(principalUser.getCurrentUserMail()).thenReturn(account.getMail());
+
     }
 
     @Test
@@ -78,7 +78,7 @@ public class UserServiceTest {
     @DisplayName("delete user by email with empty balance should return true")
     void deleteUser_Test_shouldReturnTrue() throws DataNotFoundException, BalanceNotEmptyException {
         //ARRANGE
-        user.getAccount().setBalance(0);
+        when(principalUser.getCurrentUserMail()).thenReturn(account.getMail());
         when(userRepository.findByAccount_Mail("john@exemple.fr")).thenReturn(Optional.of(user));
         doNothing().when(userRepository).deleteById(user.getUserID());
         //ACT
@@ -94,7 +94,7 @@ public class UserServiceTest {
     @DisplayName("delete user by user email with a non-existent user should trow DataNotFoundException")
     void deleteUser_Test_shouldTrowDataNotFoundException() throws DataNotFoundException, BalanceNotEmptyException {
         //ARRANGE
-        user.getAccount().setBalance(0);
+        when(principalUser.getCurrentUserMail()).thenReturn(account.getMail());
         when(userRepository.findByAccount_Mail("john@exemple.fr")).thenReturn(Optional.empty());
         //ACT //ASSERT
         assertThrows(DataNotFoundException.class,
@@ -108,6 +108,7 @@ public class UserServiceTest {
     @DisplayName("delete user by user email with a balance not empty should trow BalanceNotEmptyException")
     void deleteUser_Test_shouldTrowBalanceNotEmptyException() throws DataNotFoundException, BalanceNotEmptyException {
         //ARRANGE
+        when(principalUser.getCurrentUserMail()).thenReturn(account.getMail());
         user.getAccount().setBalance(180);
         when(userRepository.findByAccount_Mail("john@exemple.fr")).thenReturn(Optional.of(user));
         //ACT //ASSERT
@@ -146,25 +147,76 @@ public class UserServiceTest {
         //ACT// ASSERT
         assertThrows(AlreadyExistsException.class,
                 () -> userService.addUser(signupDTO));
-        verify(userRepository).findByAccount_Mail(signupDTO.getMail());
+       verify(userRepository).findByAccount_Mail(any(String.class));
 
     }
 
     @Test
     @Tag("UpdateUser")
     @DisplayName("update user should return new user's profile DTO")
-    void addUser_Test_shouldReturnNewProfileDTo()  {
+    void UpdateUser_Test_shouldReturnNewProfileDTO()  {
         //ARRANGE
+        when(principalUser.getCurrentUserMail()).thenReturn(account.getMail());
         when(userRepository.findByAccount_Mail(signupDTO.getMail())).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
         when(accountMapper.toProfileDTO(any(Account.class))).thenReturn(profileDTO);
         //ACT
         ProfileDTO result = userService.updateUser(signupDTO);
         //ASSERT
+        assertThat(result).isEqualToComparingFieldByField(profileDTO);
         verify(userRepository).save(any());
         verify(userRepository).findByAccount_Mail(signupDTO.getMail());
-
         verify(accountMapper).toProfileDTO(any(Account.class));
+
+    }
+    @Test
+    @Tag("UpdateUser")
+    @DisplayName("update user with null password should return new user's profile DTO")
+    void UpdateUser_Test_shouldReturnProfileDTO()  {
+        //ARRANGE
+        signupDTO.setPassword(null);
+        when(principalUser.getCurrentUserMail()).thenReturn(account.getMail());
+        when(userRepository.findByAccount_Mail(signupDTO.getMail())).thenReturn(Optional.of(user));
+        when(userRepository.save(user)).thenReturn(user);
+        when(accountMapper.toProfileDTO(any(Account.class))).thenReturn(profileDTO);
+        //ACT
+        ProfileDTO result = userService.updateUser(signupDTO);
+        //ASSERT
+        assertThat(result).isEqualToComparingFieldByField(profileDTO);
+        verify(userRepository).save(any());
+        verify(userRepository).findByAccount_Mail(signupDTO.getMail());
+        verify(accountMapper).toProfileDTO(any(Account.class));
+
+    }
+    @Test
+    @Tag("getUser")
+    @DisplayName("get user should return user profile DTO")
+    void getUser_Test_shouldReturnProfileDTO() throws DataNotFoundException {
+        //ARRANGE
+        when(principalUser.getCurrentUserMail()).thenReturn(account.getMail());
+        when(userRepository.findByAccount_Mail(signupDTO.getMail())).thenReturn(Optional.of(user));
+        when(accountMapper.toProfileDTO(any(Account.class))).thenReturn(profileDTO);
+        //ACT
+        ProfileDTO result = userService.getUser();
+        //ASSERT
+        assertThat(result).isEqualToComparingFieldByField(profileDTO);
+        verify(userRepository).findByAccount_Mail(signupDTO.getMail());
+        verify(accountMapper).toProfileDTO(any(Account.class));
+
+    }
+    @Test
+    @Tag("getUser")
+    @DisplayName("get user with non existing one should throw DataNotFoundException")
+    void getUser_Test_shouldThrowDataNotFoundException() throws DataNotFoundException {
+        //ARRANGE
+        when(principalUser.getCurrentUserMail()).thenReturn(account.getMail());
+        when(userRepository.findByAccount_Mail(signupDTO.getMail())).thenReturn(Optional.empty());
+
+        //ACT*//ASSERT
+        assertThrows(DataNotFoundException.class,
+                () -> userService.getUser());
+        verify(userRepository).findByAccount_Mail(signupDTO.getMail());
+
 
     }
 

@@ -36,17 +36,18 @@ public class PaymentService {
 
     private final AccountRepository accountRepository;
     private final TransactionMapper transactionMapper;
-
+    private final Calculator calculator;
     private final PrincipalUser principalUser;
     private double fee;
     private double total;
 
     @Autowired
-    public PaymentService(PaymentRepository paymentRepository, TransferRepository transferRepository, AccountRepository accountRepository, TransactionMapper transactionMapper, PrincipalUser principalUser) {
+    public PaymentService(PaymentRepository paymentRepository, TransferRepository transferRepository, AccountRepository accountRepository, TransactionMapper transactionMapper, Calculator calculator, PrincipalUser principalUser) {
         this.paymentRepository = paymentRepository;
         this.transferRepository = transferRepository;
         this.accountRepository = accountRepository;
         this.transactionMapper = transactionMapper;
+        this.calculator = calculator;
         this.principalUser = principalUser;
     }
 
@@ -67,8 +68,8 @@ public class PaymentService {
         if (accountDebit.isEnabled() &&//account is active
                 accountCredit.isEnabled() && accountDebit.getAccountOwner().getContacts()
                 .contains(accountCredit.getAccountOwner())) {// credit account is in contact list
-            fee = Calculator.feeCalculator(paymentDTO.getAmount());
-            total = Calculator.totalCalculator(paymentDTO.getAmount());
+            fee = calculator.feeCalculator(paymentDTO.getAmount());
+            total = calculator.totalCalculator(paymentDTO.getAmount());
             if (accountDebit.getBalance() >= total) { // account has enough balance
                 accountCredit.setBalance(accountCredit.getBalance() + paymentDTO.getAmount());
                 accountDebit.setBalance(accountDebit.getBalance() - total);

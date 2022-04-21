@@ -44,21 +44,22 @@ public class TransferService {
     private final  TransactionMapper transactionMapper;
 
     private final PrincipalUser principalUser;
-
+private final Calculator calculator;
     private double fee;
     private double total;
 @Autowired
-    public TransferService(TransferRepository transferRepository, AccountRepository accountRepository, TransactionMapper transactionMapper, PrincipalUser principalUser) {
+    public TransferService(TransferRepository transferRepository, AccountRepository accountRepository, TransactionMapper transactionMapper, PrincipalUser principalUser, Calculator calculator) {
         this.transferRepository = transferRepository;
         this.accountRepository = accountRepository;
         this.transactionMapper = transactionMapper;
         this.principalUser = principalUser;
-    }
+    this.calculator = calculator;
+}
 
     /**
      * sen money to bank account
      *
-     * @return true transfer is done
+     * @return true if transfer is done
      * @throws InsufficientFundsException
      * @throws DataNotFoundException
      */
@@ -70,8 +71,8 @@ public class TransferService {
             log.error("no bank account attached to this account ");
             throw new DataNotFoundException("bank account not found ");
         }
-        fee = Calculator.feeCalculator(transferToAdd.getAmount());
-        total = Calculator.totalCalculator(transferToAdd.getAmount());
+        fee = calculator.feeCalculator(transferToAdd.getAmount());
+        total = calculator.totalCalculator(transferToAdd.getAmount());
         if (transferToAdd.getOperationType().equals(OperationType.CREDIT)) {
             account.setBalance(account.getBalance() + transferToAdd.getAmount());
             transferRepository.save(new Transfer(transferToAdd.getAmount(), fee, transferToAdd.getDescription(), now(), null, account, account.getAccountOwner().getBankAccount()));
