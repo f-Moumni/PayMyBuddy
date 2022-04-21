@@ -9,10 +9,7 @@ import java.time.LocalDate;
 import java.util.Set;
 import java.util.TreeSet;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Entity()
 @Table(name = "user")
 public class AppUser {
@@ -82,6 +79,73 @@ public class AppUser {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
+    }
+
+    public AppUser() {
+
+    }
+
+    public AppUser(long userID, String firstName, String lastName, LocalDate birthDate, Account account) {
+        this.userID = userID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.account = account;
+
+    }
+
+
+
+    public long getUserID() {
+        return userID;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
+    public Set<AppUser> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(Set<AppUser> contacts) {
+        this.contacts = contacts;
     }
 
     public void removeAccount(AppUser appUser) {

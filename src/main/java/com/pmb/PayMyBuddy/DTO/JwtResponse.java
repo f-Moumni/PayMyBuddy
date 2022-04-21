@@ -7,10 +7,13 @@ import java.util.List;
 
 public class JwtResponse {
     private String accessToken;
-    private String email;
-    public JwtResponse(String token, String email) {
-        this.accessToken = token;
+
+
+
+    public JwtResponse(String jwt) {
+        this.accessToken =jwt;
     }
+
     public String getAccessToken() {
         return accessToken;
     }

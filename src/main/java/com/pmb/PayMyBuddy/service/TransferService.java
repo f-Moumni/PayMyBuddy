@@ -36,14 +36,24 @@ import static java.time.LocalDateTime.now;
 public class TransferService {
 
 
-    @Autowired
-    TransferRepository transferRepository;
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private TransactionMapper transactionMapper;
+
+   private final TransferRepository transferRepository;
+
+    private final AccountRepository accountRepository;
+
+    private final  TransactionMapper transactionMapper;
+
+    private final PrincipalUser principalUser;
+
     private double fee;
     private double total;
+@Autowired
+    public TransferService(TransferRepository transferRepository, AccountRepository accountRepository, TransactionMapper transactionMapper, PrincipalUser principalUser) {
+        this.transferRepository = transferRepository;
+        this.accountRepository = accountRepository;
+        this.transactionMapper = transactionMapper;
+        this.principalUser = principalUser;
+    }
 
     /**
      * sen money to bank account
@@ -54,7 +64,7 @@ public class TransferService {
      */
 
     public boolean doTransfer(TransferDTO transferToAdd) throws DataNotFoundException, InsufficientFundsException {
-        Account account = accountRepository.findByMail(PrincipalUser.getCurrentUserMail()).get();
+        Account account = accountRepository.findByMail(principalUser.getCurrentUserMail()).get();
         log.info("saving transfer for {}", account.getAccountOwner().getFirstName());
         if (account.getAccountOwner().getBankAccount() == null) { //bank account verification
             log.error("no bank account attached to this account ");
@@ -80,30 +90,29 @@ public class TransferService {
     /**
      * get all transaction to a given account
      *
-     * @param email
      * @return set of transactions
      */
 
-    public List<TransactionDTO> getSentTransfers(String email) {
+    private List<TransactionDTO> getSentTransfers() {
 
         List<Transfer>  transfers = new ArrayList<>();
-        transferRepository.findByDebitAccount(email).forEach(transfers::add);
+        transferRepository.findByDebitAccount(principalUser.getCurrentUserMail()).forEach(transfers::add);
         return transfers.stream()
                 .map(transfer -> transactionMapper.transferMapper(transfer, OperationType.DEBIT)).collect(Collectors.toList());
 
     }
 
-    public List<TransactionDTO> getReservedTransfers(String email) {
+    private List<TransactionDTO> getReservedTransfers() {
 
         List<Transfer>  transfers = new ArrayList<>();
-        transferRepository.findByCreditAccount(email).forEach(transfers::add);
+        transferRepository.findByCreditAccount(principalUser.getCurrentUserMail()).forEach(transfers::add);
         return transfers.stream()
                 .map(transfer -> transactionMapper.transferMapper(transfer, OperationType.CREDIT)).collect(Collectors.toList());
     }
 
-    public List<TransactionDTO> getAllTransfers(String email) {
+    public List<TransactionDTO> getAllTransfers() {
 
-        return Stream.concat(getReservedTransfers(email).stream(), getSentTransfers(email).stream()).collect(Collectors.toList());
+        return Stream.concat(getReservedTransfers().stream(), getSentTransfers().stream()).collect(Collectors.toList());
     }
 
     private void updatePMBAccount(double fee) {

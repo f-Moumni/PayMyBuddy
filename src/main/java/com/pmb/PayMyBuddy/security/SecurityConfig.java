@@ -51,7 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/sign-up","/sign-in").permitAll()
                 .anyRequest().authenticated().and().formLogin()
-                .loginPage("/api/sign-up")
+                .loginPage("/api/sign-in").defaultSuccessUrl("/home")
+                .and()
+                .logout().logoutSuccessUrl("/sign-in")
                 .and().rememberMe();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

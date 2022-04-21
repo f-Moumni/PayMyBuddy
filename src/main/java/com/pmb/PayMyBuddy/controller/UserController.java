@@ -4,6 +4,7 @@ package com.pmb.PayMyBuddy.controller;
 import com.pmb.PayMyBuddy.DTO.Response;
 import com.pmb.PayMyBuddy.DTO.SignupDTO;
 import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
+import com.pmb.PayMyBuddy.exceptions.BalanceNotEmptyException;
 import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
 import com.pmb.PayMyBuddy.security.PrincipalUser;
@@ -32,7 +33,7 @@ public class UserController {
     public ResponseEntity<Response> GetProfile() throws DataNotFoundException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("account", userService.getUser(PrincipalUser.getCurrentUserMail())))
+                        .data(Map.of("account", userService.getUser()))
                         .message("Account retrieved")
                         .status(OK)
                         .statusCode(OK.value())
@@ -62,10 +63,10 @@ public class UserController {
     }
 
     @DeleteMapping("account")
-    public ResponseEntity<Response> deleteUser() throws DataNotFoundException, InsufficientFundsException {
+    public ResponseEntity<Response> deleteUser() throws DataNotFoundException, BalanceNotEmptyException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("account", userService.deleteUser(PrincipalUser.getCurrentUserMail())))
+                        .data(Map.of("account", userService.deleteUser()))
                         .message("Account deleted")
                         .status(OK)
                         .statusCode(OK.value())

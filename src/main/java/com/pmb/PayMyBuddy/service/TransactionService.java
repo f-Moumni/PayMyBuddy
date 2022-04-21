@@ -21,8 +21,8 @@ public class TransactionService {
     TransferService transferService;
 
 
-    public List<TransactionDTO> getAllTransactions(String email) {
-        return Stream.concat(paymentService.getAllPayments(email).stream(),transferService.getAllTransfers(email).stream()
+    public List<TransactionDTO> getAllTransactions() {
+        return Stream.concat(paymentService.getAllPayments().stream(),transferService.getAllTransfers().stream()
         ).collect(Collectors.toList());
     }
 }

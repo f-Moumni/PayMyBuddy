@@ -46,9 +46,9 @@ public class GlobalExceptionHandler {
             AlreadyExistsException e, WebRequest request) {
 
         ExceptionDetails exception = new ExceptionDetails(LocalDateTime.now(),
-                e.getMessage(), HttpStatus.ALREADY_REPORTED,
+                e.getMessage(), HttpStatus.CONFLICT,
                 request.getDescription(false));
-        return new ResponseEntity<>(exception, HttpStatus.ALREADY_REPORTED);
+        return new ResponseEntity<>(exception, HttpStatus.CONFLICT);
 
     }
 }

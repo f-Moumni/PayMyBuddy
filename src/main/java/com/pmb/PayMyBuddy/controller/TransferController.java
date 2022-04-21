@@ -35,31 +35,11 @@ public class TransferController {
                         .build());
     }
 
-    @GetMapping("/Received")
-    public ResponseEntity<Response> getReceivedTransfer(@RequestParam @Valid String mail)  {
-        return ResponseEntity.ok(
-                Response.builder().timeStamp(now())
-                        .data(Map.of("transfers", transferService.getReservedTransfers(mail)))
-                        .message(" retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-    @GetMapping("/sent")
-    public ResponseEntity<Response> getSentTransfer(@RequestParam @Valid String mail)  {
-        return ResponseEntity.ok(
-                Response.builder().timeStamp(now())
-                        .data(Map.of("transfers", transferService.getSentTransfers(mail)))
-                        .message(" retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
     @GetMapping("/all")
     public ResponseEntity<Response> getAllTransfer()  {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("transactions", transferService.getAllTransfers(PrincipalUser.getCurrentUserMail())))
+                        .data(Map.of("transactions", transferService.getAllTransfers()))
                         .message(" retrieved")
                         .status(OK)
                         .statusCode(OK.value())

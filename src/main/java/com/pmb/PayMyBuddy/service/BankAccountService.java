@@ -20,12 +20,20 @@ import javax.transaction.Transactional;
 @Slf4j
 public class BankAccountService implements IBankAccountService {
 
+
+    private final BankAccountRepository bankAccountRepository;
+    private final UserRepository userRepository;
+    private final BankAccountMapper bankAccountMapper;
+    private final PrincipalUser principalUser;
+
     @Autowired
-    BankAccountRepository bankAccountRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    BankAccountMapper bankAccountMapper;
+    public BankAccountService(BankAccountRepository bankAccountRepository, UserRepository userRepository, BankAccountMapper bankAccountMapper, PrincipalUser principalUser) {
+        this.bankAccountRepository = bankAccountRepository;
+        this.userRepository = userRepository;
+        this.bankAccountMapper = bankAccountMapper;
+        this.principalUser = principalUser;
+    }
+
 
     /**
      * get a bank account for a given account email
@@ -35,23 +43,24 @@ public class BankAccountService implements IBankAccountService {
      */
     @Override
     public BankAccountDTO getBankAccount() throws DataNotFoundException {
-        BankAccount bankAccount = bankAccountRepository.findByOwner_Account_Mail(PrincipalUser.getCurrentUserMail()).
+        BankAccount bankAccount = bankAccountRepository.findByOwner_Account_Mail(principalUser.getCurrentUserMail()).
                 orElseThrow(() -> new DataNotFoundException("no bank account attached to this account "));
         return bankAccountMapper.toBankAccountDTO(bankAccount);
     }
 
     @Override
     public boolean addBankAccount(BankAccountDTO bankAccountToAdd) {
-        AppUser owner = userRepository.findByAccount_Mail(PrincipalUser.getCurrentUserMail()).get();
+        AppUser owner = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).get();
         // bankAccountRepository.findByOwner_Account_Mail(email).ifPresentOrElse();
         BankAccount newBankAccount = new BankAccount(bankAccountToAdd.getIban(), bankAccountToAdd.getSwift(), owner);
         bankAccountRepository.save(newBankAccount);
         return true;
     }
+
     @Override
     public boolean updateBankAccount(BankAccountDTO bankAccountToAdd) {
-        AppUser owner = userRepository.findByAccount_Mail(PrincipalUser.getCurrentUserMail()).get();
-        BankAccount bankAccount =owner.getBankAccount();
+        AppUser owner = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).get();
+        BankAccount bankAccount = owner.getBankAccount();
         bankAccount.setIban(bankAccountToAdd.getIban());
         bankAccount.setSwift(bankAccountToAdd.getSwift());
         bankAccountRepository.save(bankAccount);

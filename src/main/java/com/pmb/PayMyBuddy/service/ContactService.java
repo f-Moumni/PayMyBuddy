@@ -9,6 +9,7 @@ import com.pmb.PayMyBuddy.model.Account;
 import com.pmb.PayMyBuddy.model.AppUser;
 import com.pmb.PayMyBuddy.repository.AccountRepository;
 import com.pmb.PayMyBuddy.repository.UserRepository;
+import com.pmb.PayMyBuddy.security.PrincipalUser;
 import com.pmb.PayMyBuddy.util.AccountMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,21 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ContactService implements IContactService {
 
-    @Autowired
-    AccountRepository accountRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    AccountMapper accountMapper;
+    private final AccountRepository accountRepository;
 
+    private final UserRepository userRepository;
+
+    private final AccountMapper accountMapper;
+
+    private final PrincipalUser principalUser;
+
+    @Autowired
+    public ContactService(AccountRepository accountRepository, UserRepository userRepository, AccountMapper accountMapper, PrincipalUser principalUser) {
+        this.accountRepository = accountRepository;
+        this.userRepository = userRepository;
+        this.accountMapper = accountMapper;
+        this.principalUser = principalUser;
+    }
 
     /**
      * searcher a contact by email
@@ -56,13 +65,13 @@ public class ContactService implements IContactService {
      */
 
     @Override
-    public ContactDTO addContact(String contactMail, String ownerEmail) throws AlreadyExistsException, DataNotFoundException {
+    public ContactDTO addContact(String contactMail) throws AlreadyExistsException, DataNotFoundException {
 
         log.info("adding contact with email {}", contactMail);
-        AppUser owner = userRepository.findByAccount_Mail(ownerEmail).get();
-        AppUser contact = userRepository.findByAccount_Mail(contactMail).orElseThrow( () -> new DataNotFoundException("no account found with email address " + contactMail));
-        if (owner.getContacts().contains(contact)){
-            log.error("{} is already in contact",contactMail);
+        AppUser owner = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).get();
+        AppUser contact = userRepository.findByAccount_Mail(contactMail).orElseThrow(() -> new DataNotFoundException("no account found with email address " + contactMail));
+        if (owner.getContacts().contains(contact)) {
+            log.error("{} is already in contact", contactMail);
             throw new AlreadyExistsException("contact already saved");
         }
         owner.addContact(contact);
@@ -75,14 +84,13 @@ public class ContactService implements IContactService {
      * delete contact between two users
      *
      * @param
-     * @param ownerEmail
      * @return true if deleted, false if not
      */
 
     @Override
-    public Boolean deleteContact(String contactMail, String ownerEmail) {
+    public Boolean deleteContact(String contactMail) {
         log.info("adding contact with email {}", contactMail);
-        AppUser owner = userRepository.findByAccount_Mail(ownerEmail).get();
+        AppUser owner = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).get();
         AppUser contact = userRepository.findByAccount_Mail(contactMail).get();
         owner.removeContact(contact);
         userRepository.save(owner);
@@ -91,10 +99,10 @@ public class ContactService implements IContactService {
 
 
     @Override
-    public Set<ContactDTO> getContacts(String ownerEmail) {
-        log.info("getting all contacts of email {}", ownerEmail);
-        AppUser owner = userRepository.findByAccount_Mail(ownerEmail).get();
-        return owner.getContacts().stream().map(user ->accountMapper.toContactDTO(user.getAccount())).collect(Collectors.toSet());
+    public Set<ContactDTO> getContacts() {
+        log.info("getting all contacts of email {}", principalUser.getCurrentUserMail());
+        AppUser owner = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).get();
+        return owner.getContacts().stream().map(user -> accountMapper.toContactDTO(user.getAccount())).collect(Collectors.toSet());
     }
 }
 

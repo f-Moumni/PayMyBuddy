@@ -24,31 +24,12 @@ public class PaymentController {
     @Autowired
     PaymentService paymentService;
 
-    @GetMapping("/sent")
-    public ResponseEntity<Response> getSentPayment()  {
-        return ResponseEntity.ok(
-                Response.builder().timeStamp(now())
-                        .data(Map.of("payment", paymentService.getSentPayments(PrincipalUser.getCurrentUserMail())))
-                        .message(" retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-    @GetMapping("/received")
-    public ResponseEntity<Response> getReceivedPayment()  {
-        return ResponseEntity.ok(
-                Response.builder().timeStamp(now())
-                        .data(Map.of("payment", paymentService.getReceivedPayments(PrincipalUser.getCurrentUserMail())))
-                        .message(" retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
+
     @GetMapping("/all")
     public ResponseEntity<Response> getAllPayment()  {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("transactions", paymentService.getAllPayments(PrincipalUser.getCurrentUserMail())))
+                        .data(Map.of("transactions", paymentService.getAllPayments()))
                         .message(" all retrieved")
                         .status(OK)
                         .statusCode(OK.value())

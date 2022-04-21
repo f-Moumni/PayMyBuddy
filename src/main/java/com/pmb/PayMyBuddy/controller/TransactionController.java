@@ -31,7 +31,7 @@ public class TransactionController {
     public ResponseEntity<Response> getTransactions()  {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("transactions", transactionService.getAllTransactions(PrincipalUser.getCurrentUserMail())))
+                        .data(Map.of("transactions", transactionService.getAllTransactions()))
                         .message("all transaction got with success ")
                         .status(OK)
                         .statusCode(OK.value())
