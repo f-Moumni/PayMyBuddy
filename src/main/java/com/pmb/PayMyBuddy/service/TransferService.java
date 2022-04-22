@@ -112,7 +112,6 @@ private final Calculator calculator;
     }
 
     public List<TransactionDTO> getAllTransfers() {
-
         return Stream.concat(getReservedTransfers().stream(), getSentTransfers().stream()).collect(Collectors.toList());
     }
 

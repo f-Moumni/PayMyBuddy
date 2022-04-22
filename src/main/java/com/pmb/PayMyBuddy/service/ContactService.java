@@ -79,7 +79,6 @@ public class ContactService implements IContactService {
         return accountMapper.toContactDTO(contact.getAccount());
     }
 
-
     /**
      * delete contact between two users
      *

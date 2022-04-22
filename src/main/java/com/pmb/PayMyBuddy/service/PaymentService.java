@@ -31,9 +31,6 @@ import static java.time.LocalDateTime.now;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
-
-    private final TransferRepository transferRepository;
-
     private final AccountRepository accountRepository;
     private final TransactionMapper transactionMapper;
     private final Calculator calculator;
@@ -42,9 +39,8 @@ public class PaymentService {
     private double total;
 
     @Autowired
-    public PaymentService(PaymentRepository paymentRepository, TransferRepository transferRepository, AccountRepository accountRepository, TransactionMapper transactionMapper, Calculator calculator, PrincipalUser principalUser) {
+    public PaymentService(PaymentRepository paymentRepository, AccountRepository accountRepository, TransactionMapper transactionMapper, Calculator calculator, PrincipalUser principalUser) {
         this.paymentRepository = paymentRepository;
-        this.transferRepository = transferRepository;
         this.accountRepository = accountRepository;
         this.transactionMapper = transactionMapper;
         this.calculator = calculator;
@@ -80,10 +76,11 @@ public class PaymentService {
             } else {
                 throw new InsufficientFundsException("poor balance");
             }
+            updatePMBAccount(fee);// update admin account
+            return true;
         }
-        updatePMBAccount(fee);// update admin account
+return false;
 
-        return true;
     }
 
     private List<TransactionDTO> getSentPayments() {
