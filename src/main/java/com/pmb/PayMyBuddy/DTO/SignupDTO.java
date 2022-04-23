@@ -1,7 +1,7 @@
 package com.pmb.PayMyBuddy.DTO;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pmb.PayMyBuddy.util.DateHandler;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 import javax.validation.constraints.Email;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class SignupDTO {
     private String firstName;
     private String lastName;
-    @JsonDeserialize(using = DateHandler.class)
+    @DateTimeFormat
     private LocalDate birthDate;
     @Email(message = "invalid email ")
     private String mail;

@@ -20,7 +20,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountMapperTest {
-   private AccountMapper accountMapper;
+    private AccountMapper accountMapper;
     private Account account;
     private AppUser user;
 
@@ -28,9 +28,9 @@ public class AccountMapperTest {
     void setUp() throws Exception {
         accountMapper = new AccountMapper();
         account = new Account(2, "john@exemple.fr", "password", 0, true,
-                new Role(1L,"USER"));
-        user = new AppUser( "john", "doe", LocalDate.now().minusYears(25));
-account.setAccountOwner(user);
+                new Role(1L, "USER"));
+        user = new AppUser("john", "doe", LocalDate.now().minusYears(25));
+        account.setAccountOwner(user);
     }
 
     @Test
@@ -38,7 +38,7 @@ account.setAccountOwner(user);
     @DisplayName("toProfileDTO test should map account to Profile DTO ")
     void toProfileDTO_Test_shouldReturnProfileDTO() {
         //ARRANGE
-      ProfileDTO  profileDTO = new ProfileDTO("john", "doe", LocalDate.now().minusYears(25), "john@exemple.fr", 0);
+        ProfileDTO profileDTO = new ProfileDTO("john", "doe", LocalDate.now().minusYears(25), "john@exemple.fr", 0);
         //ACT
         ProfileDTO result = accountMapper.toProfileDTO(account);
         //ASSERT
@@ -50,7 +50,7 @@ account.setAccountOwner(user);
     @DisplayName("toContactDTO test should map account to Contact DTO ")
     void toProfileDTO_Test_shouldReturnContactDTO() {
         //ARRANGE
-        ContactDTO contactDTO = new ContactDTO("john", "doe",  "john@exemple.fr");
+        ContactDTO contactDTO = new ContactDTO("john", "doe", "john@exemple.fr");
         //ACT
         ContactDTO result = accountMapper.toContactDTO(account);
         //ASSERT

@@ -1,8 +1,6 @@
 package com.pmb.PayMyBuddy.DTO;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pmb.PayMyBuddy.util.DateHandler;
-import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
@@ -12,7 +10,8 @@ public class ProfileDTO {
 
     private String firstName;
     private String lastName;
-    @JsonDeserialize(using = DateHandler.class)
+
+   @DateTimeFormat
     private LocalDate birthdate;
     @Email
     private String mail;
