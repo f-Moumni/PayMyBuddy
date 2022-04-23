@@ -58,7 +58,6 @@ public class UserServiceTest {
     @BeforeAll
     static void beforeAll() {
 
-
     }
 
     @BeforeEach

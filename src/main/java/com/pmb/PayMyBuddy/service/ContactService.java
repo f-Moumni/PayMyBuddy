@@ -41,22 +41,6 @@ public class ContactService implements IContactService {
     }
 
     /**
-     * searcher a contact by email
-     *
-     * @param email
-     * @return
-     * @throws DataNotFoundException
-     */
-    @Override
-    public ContactDTO getContact(String email) throws DataNotFoundException {
-        log.info("searching contact with email {}", email);
-        AppUser appUser = userRepository.findByAccount_Mail(email).orElseThrow(() ->
-                new DataNotFoundException("no account found with email address " + email));
-        Account contact = appUser.getAccount();
-        return accountMapper.toContactDTO(contact);
-    }
-
-    /**
      * add contact between two users
      *
      * @param
@@ -70,13 +54,17 @@ public class ContactService implements IContactService {
         log.info("adding contact with email {}", contactMail);
         AppUser owner = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).get();
         AppUser contact = userRepository.findByAccount_Mail(contactMail).orElseThrow(() -> new DataNotFoundException("no account found with email address " + contactMail));
-        if (owner.getContacts().contains(contact)) {
-            log.error("{} is already in contact", contactMail);
-            throw new AlreadyExistsException("contact already saved");
+        if (!(owner.getAccount().getMail().equals(contact.getAccount().getMail()))) {
+            if (owner.getContacts().contains(contact)) {
+                log.error("{} is already in contact", contactMail);
+                throw new AlreadyExistsException("contact already saved");
+            }
+            owner.addContact(contact);
+            userRepository.save(owner);
+            return accountMapper.toContactDTO(contact.getAccount());
+        } else {
+            throw new IllegalArgumentException("you can not add your account to your contacts");
         }
-        owner.addContact(contact);
-        userRepository.save(owner);
-        return accountMapper.toContactDTO(contact.getAccount());
     }
 
     /**
@@ -88,7 +76,7 @@ public class ContactService implements IContactService {
 
     @Override
     public Boolean deleteContact(String contactMail) {
-        log.info("adding contact with email {}", contactMail);
+        log.info("deleting contact with email {}", contactMail);
         AppUser owner = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).get();
         AppUser contact = userRepository.findByAccount_Mail(contactMail).get();
         owner.removeContact(contact);

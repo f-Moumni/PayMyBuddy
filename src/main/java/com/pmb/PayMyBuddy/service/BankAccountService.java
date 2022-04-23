@@ -51,7 +51,6 @@ public class BankAccountService implements IBankAccountService {
     @Override
     public boolean addBankAccount(BankAccountDTO bankAccountToAdd) {
         AppUser owner = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).get();
-        // bankAccountRepository.findByOwner_Account_Mail(email).ifPresentOrElse();
         BankAccount newBankAccount = new BankAccount(bankAccountToAdd.getIban(), bankAccountToAdd.getSwift(), owner);
         bankAccountRepository.save(newBankAccount);
         return true;

@@ -83,7 +83,7 @@ public class PaymentServiceTest {
         accountOwner.setAccountOwner(userOwner);
         userContact = new AppUser("thomas", "doe", LocalDate.now().minusYears(25));
         accountContact.setAccountOwner(userContact);
-        userOwner.setContacts(Set.of(userContact));
+        userOwner.setContacts(List.of(userContact));
         pMBAccount = new Account();
         pMBAccount.setBalance(0);
         paymentDTO = new PaymentDTO("doe@exemple.fr", 20, "billet de train");
@@ -125,7 +125,7 @@ public class PaymentServiceTest {
     void doPayment_Test_withUserNonInContacts_shouldReturnFalse() throws InsufficientFundsException {
 
         //ARRANGE
-        userOwner.setContacts(Set.of());
+        userOwner.setContacts(List.of());
         when(principalUser.getCurrentUserMail()).thenReturn("john@exemple.fr");
         when(accountRepository.findByMail("john@exemple.fr")).thenReturn(Optional.of(accountOwner));
         when(accountRepository.findByMail("doe@exemple.fr")).thenReturn(Optional.of(accountContact));

@@ -10,7 +10,7 @@ import java.util.Set;
 @Service
 public interface IContactService {
 
-    ContactDTO getContact(String email) throws DataNotFoundException;
+
 
     ContactDTO addContact(String contactMail) throws AlreadyExistsException, DataNotFoundException;
 

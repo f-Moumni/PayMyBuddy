@@ -6,6 +6,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -73,7 +75,7 @@ public class AppUser {
             inverseJoinColumns = @JoinColumn(name = "contact_id")
     )
 
-    private Set<AppUser> contacts = new TreeSet<>();
+    private List<AppUser> contacts = new ArrayList<>();
 
     public AppUser(String firstName, String lastName, LocalDate birthDate) {
         this.firstName = firstName;
@@ -140,11 +142,11 @@ public class AppUser {
         this.bankAccount = bankAccount;
     }
 
-    public Set<AppUser> getContacts() {
+    public List<AppUser> getContacts() {
         return contacts;
     }
 
-    public void setContacts(Set<AppUser> contacts) {
+    public void setContacts(List<AppUser> contacts) {
         this.contacts = contacts;
     }
 
@@ -155,6 +157,7 @@ public class AppUser {
     }
 
    public void addContact(AppUser appUser) {
+
         appUser.getContacts().add(this);
         contacts.add(appUser);
     }
