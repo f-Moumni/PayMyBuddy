@@ -52,9 +52,9 @@ public class BankAccountServiceTest {
         account.setMail("john@exemple.fr");
         user = new AppUser("john", "doe", LocalDate.now().minusYears(25));
         account.setAccountOwner(user);
-        bankAccount = new BankAccount("iban", "swift", user);
+        bankAccount = new BankAccount("iban123456", "swift123456", user);
         bankAccountDTO = new BankAccountDTO("iban", "swift");
-
+user.setBankAccount(bankAccount);
     }
 
    @Test
@@ -111,9 +111,11 @@ public class BankAccountServiceTest {
         when(userRepository.findByAccount_Mail("john@exemple.fr")).thenReturn(Optional.of(user));
         doReturn(bankAccount).when(bankAccountRepository).save(any(BankAccount.class));
         //ACT
-        boolean result = bankAccountService.addBankAccount(bankAccountDTO);
+        boolean result = bankAccountService.updateBankAccount(bankAccountDTO);
         //ASSERT
         assertTrue(result);
+        assertThat(user.getBankAccount().getIban()).isEqualTo("iban");
+        assertThat(user.getBankAccount().getSwift()).isEqualTo("swift");
         verify(userRepository).findByAccount_Mail(any(String.class));
         verify(principalUser).getCurrentUserMail();
     }
