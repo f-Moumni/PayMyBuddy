@@ -1,6 +1,7 @@
 package com.pmb.PayMyBuddy.security;
 import com.pmb.PayMyBuddy.security.jwt.AuthEntryPointJwt;
 import com.pmb.PayMyBuddy.security.jwt.AuthTokenFilter;
+import com.pmb.PayMyBuddy.security.jwt.JwtUtils;
 import com.pmb.PayMyBuddy.service.AccountDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

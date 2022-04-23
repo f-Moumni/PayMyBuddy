@@ -1,7 +1,6 @@
 package com.pmb.PayMyBuddy.service;
 
-import com.pmb.PayMyBuddy.exceptions.BalanceNotEmptyException;
-import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
+
 import com.pmb.PayMyBuddy.model.Account;
 import com.pmb.PayMyBuddy.model.AppUser;
 import com.pmb.PayMyBuddy.model.Role;
@@ -14,12 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.User;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
