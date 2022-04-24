@@ -1,9 +1,11 @@
 package com.pmb.PayMyBuddy.DTO;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public class LoginRequest {
     @NotBlank
+    @Email
     private String mail;
 
     @NotBlank
@@ -22,6 +24,11 @@ public class LoginRequest {
     }
 
     public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public LoginRequest(String mail, String password) {
+        this.mail = mail;
         this.password = password;
     }
 }

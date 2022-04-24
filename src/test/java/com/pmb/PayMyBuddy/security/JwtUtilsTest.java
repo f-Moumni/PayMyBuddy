@@ -12,11 +12,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
@@ -31,17 +36,19 @@ public class JwtUtilsTest {
 
     @BeforeEach
     void setUp() throws Exception {
-
+        User user = new User("john@email.fr", "password", Collections.emptyList());
+        SecurityContext securitycontext = new SecurityContextImpl();
+        securitycontext.setAuthentication(new TestingAuthenticationToken(user, null, Collections.emptyList()));
+        SecurityContextHolder.setContext(securitycontext);
 
     }
 
     //todo fix this test after adding test profile
     // @Test
     @Tag("generateJwtToken")
-    @DisplayName("loadUserByUsername should return UserDetails of account for a given email")
-    void loadUserByUsername_Test_shouldUserDetail() {
-        User user = new User("john@email.fr", "password", new ArrayList<>());
-        doReturn(user).when(authentication).getPrincipal();
+    @DisplayName("generateJwtToken should return UserDetails of account for a given email")
+    void generateJwtToken_Test_shouldGenerateNewToken() {
+
         //ACT
         String result = jwtUtils.generateJwtToken(authentication);
         //ASSERT

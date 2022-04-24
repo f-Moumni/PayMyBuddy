@@ -1,7 +1,7 @@
 package com.pmb.PayMyBuddy.security;
+
 import com.pmb.PayMyBuddy.security.jwt.AuthEntryPointJwt;
 import com.pmb.PayMyBuddy.security.jwt.AuthTokenFilter;
-import com.pmb.PayMyBuddy.security.jwt.JwtUtils;
 import com.pmb.PayMyBuddy.service.AccountDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,26 +18,26 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        // securedEnabled = true,
-        // jsr250Enabled = true,
-        prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    AccountDetailsService accountDetailsService;
+    private AccountDetailsService accountDetailsService;
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
-
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
+
+
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
+
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(accountDetailsService).passwordEncoder(passwordEncoder.bCryptPasswordEncoder());
+        authenticationManagerBuilder.userDetailsService(accountDetailsService).passwordEncoder(passwordEncoder);
     }
+
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/sign-up","/sign-in").permitAll()
+                .authorizeRequests().antMatchers("/api/sign-up", "/sign-in").permitAll()
                 .anyRequest().authenticated().and().formLogin()
                 .loginPage("/api/sign-in").defaultSuccessUrl("/home")
                 .and()
@@ -58,4 +58,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().rememberMe();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+
 }
