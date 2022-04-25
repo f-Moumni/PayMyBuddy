@@ -1,4 +1,5 @@
 package com.pmb.PayMyBuddy.security;
+
 import com.pmb.PayMyBuddy.security.jwt.AuthEntryPointJwt;
 import com.pmb.PayMyBuddy.security.jwt.AuthTokenFilter;
 import com.pmb.PayMyBuddy.service.AccountDetailsService;
@@ -17,26 +18,26 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        // securedEnabled = true,
-        // jsr250Enabled = true,
-        prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    AccountDetailsService accountDetailsService;
+    private AccountDetailsService accountDetailsService;
+  /*  @Autowired
+    private AuthEntryPointJwt unauthorizedHandler;*/
     @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    private BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
+
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(accountDetailsService).passwordEncoder(passwordEncoder.bCryptPasswordEncoder());
+        authenticationManagerBuilder.userDetailsService(accountDetailsService).passwordEncoder(passwordEncoder);
     }
+
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -47,12 +48,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
                 .csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+               // .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/sign-up","/sign-in").permitAll()
+                .authorizeRequests().antMatchers("/api/sign-up", "/sign-in").permitAll()
                 .anyRequest().authenticated().and().formLogin()
-                .loginPage("/api/sign-up")
+                .loginPage("/api/sign-in").defaultSuccessUrl("/home")
+                .and()
+                .logout().logoutSuccessUrl("/sign-in")
                 .and().rememberMe();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+
 }

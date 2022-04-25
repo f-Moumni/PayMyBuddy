@@ -22,21 +22,12 @@ public class ContactController {
 @Autowired
 IContactService contactService;
 
-/*    @GetMapping
-    public ResponseEntity<Response> getContact(@RequestParam @Valid String mail) throws DataNotFoundException {
-        return ResponseEntity.ok(
-                Response.builder().timeStamp(now())
-                        .data(Map.of("contact", contactService.getContact(mail)))
-                        .message("Contact retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }*/
+
     @PostMapping
     public ResponseEntity<Response> addContact(@RequestParam @Valid String mail ) throws AlreadyExistsException, DataNotFoundException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("contact", contactService.addContact(mail, PrincipalUser.getCurrentUserMail())))
+                        .data(Map.of("contact", contactService.addContact(mail)))
                         .message("Contact added")
                         .status(OK)
                         .statusCode(OK.value())
@@ -46,7 +37,7 @@ IContactService contactService;
     public ResponseEntity<Response> removeContact(@RequestParam @Valid String mail) {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("contact", contactService.deleteContact(mail,PrincipalUser.getCurrentUserMail())))
+                        .data(Map.of("contact", contactService.deleteContact(mail)))
                         .message("Contact removed")
                         .status(OK)
                         .statusCode(OK.value())
@@ -56,7 +47,7 @@ IContactService contactService;
     public ResponseEntity<Response> getContacts(){
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("contacts", contactService.getContacts(PrincipalUser.getCurrentUserMail())))
+                        .data(Map.of("contacts", contactService.getContacts()))
                         .message("Contacts retrieved")
                         .status(OK)
                         .statusCode(OK.value())

@@ -1,26 +1,58 @@
 package com.pmb.PayMyBuddy.DTO;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pmb.PayMyBuddy.util.DateHandler;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
 
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class SignupDTO {
     private String firstName;
     private String lastName;
-    @JsonDeserialize(using = DateHandler.class)
+    @DateTimeFormat
     private LocalDate birthDate;
     @Email(message = "invalid email ")
     private String mail;
     private String password;
 
+    public SignupDTO(String firstName, String lastName, LocalDate birthDate, String mail, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.mail = mail;
+        this.password = password;
+    }
+
+    public SignupDTO() {
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+
+    public String getLastName() {
+        return lastName;
+    }
+
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+
+    public String getMail() {
+        return mail;
+    }
+
+
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

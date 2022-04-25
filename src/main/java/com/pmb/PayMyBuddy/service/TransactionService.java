@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 @Service
@@ -15,14 +14,18 @@ import java.util.stream.Stream;
 @Slf4j
 public class TransactionService {
 
-    @Autowired
-    PaymentService paymentService;
-    @Autowired
-    TransferService transferService;
+
+  private final  PaymentService paymentService;
+   private final  TransferService transferService;
+@Autowired
+    public TransactionService(PaymentService paymentService, TransferService transferService) {
+        this.paymentService = paymentService;
+        this.transferService = transferService;
+    }
 
 
-    public List<TransactionDTO> getAllTransactions(String email) {
-        return Stream.concat(paymentService.getAllPayments(email).stream(),transferService.getAllTransfers(email).stream()
+    public List<TransactionDTO> getAllTransactions() {
+        return Stream.concat(paymentService.getAllPayments().stream(),transferService.getAllTransfers().stream()
         ).collect(Collectors.toList());
     }
 }

@@ -8,7 +8,6 @@ import com.pmb.PayMyBuddy.model.Account;
 import com.pmb.PayMyBuddy.model.Payment;
 import com.pmb.PayMyBuddy.repository.AccountRepository;
 import com.pmb.PayMyBuddy.repository.PaymentRepository;
-import com.pmb.PayMyBuddy.repository.TransferRepository;
 import com.pmb.PayMyBuddy.security.PrincipalUser;
 import com.pmb.PayMyBuddy.util.Calculator;
 import com.pmb.PayMyBuddy.util.TransactionMapper;
@@ -28,17 +27,24 @@ import static java.time.LocalDateTime.now;
 @Service
 @Transactional
 @Slf4j
-public class PaymentService {
-    @Autowired
-    PaymentRepository paymentRepository;
-    @Autowired
-    TransferRepository transferRepository;
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private TransactionMapper transactionMapper;
+public class PaymentService implements IPaymentService {
+
+    private final PaymentRepository paymentRepository;
+    private final AccountRepository accountRepository;
+    private final TransactionMapper transactionMapper;
+    private final Calculator calculator;
+    private final PrincipalUser principalUser;
     private double fee;
     private double total;
+
+    @Autowired
+    public PaymentService(PaymentRepository paymentRepository, AccountRepository accountRepository, TransactionMapper transactionMapper, Calculator calculator, PrincipalUser principalUser) {
+        this.paymentRepository = paymentRepository;
+        this.accountRepository = accountRepository;
+        this.transactionMapper = transactionMapper;
+        this.calculator = calculator;
+        this.principalUser = principalUser;
+    }
 
     /**
      * send money to contact
@@ -47,18 +53,18 @@ public class PaymentService {
      * @return tue is payment is done
      * @throws InsufficientFundsException
      */
-
+@Override
     public boolean doPayment(PaymentDTO paymentDTO) throws InsufficientFundsException {
 
-        Account accountDebit = accountRepository.findByMail(PrincipalUser.getCurrentUserMail()).get();
+        Account accountDebit = accountRepository.findByMail(principalUser.getCurrentUserMail()).get();
         Account accountCredit = accountRepository.findByMail(paymentDTO.getCreditAccountEmail()).get();
         log.info("saving payment to {} {}", accountCredit.getAccountOwner().getFirstName(),
                 accountCredit.getAccountOwner().getLastName());
         if (accountDebit.isEnabled() &&//account is active
                 accountCredit.isEnabled() && accountDebit.getAccountOwner().getContacts()
                 .contains(accountCredit.getAccountOwner())) {// credit account is in contact list
-            fee = Calculator.feeCalculator(paymentDTO.getAmount());
-            total = Calculator.totalCalculator(paymentDTO.getAmount());
+            fee = calculator.feeCalculator(paymentDTO.getAmount());
+            total = calculator.totalCalculator(paymentDTO.getAmount());
             if (accountDebit.getBalance() >= total) { // account has enough balance
                 accountCredit.setBalance(accountCredit.getBalance() + paymentDTO.getAmount());
                 accountDebit.setBalance(accountDebit.getBalance() - total);
@@ -69,34 +75,35 @@ public class PaymentService {
             } else {
                 throw new InsufficientFundsException("poor balance");
             }
+            updatePMBAccount(fee);// update admin account
+            return true;
         }
-        updatePMBAccount(fee);// update admin account
+return false;
 
-        return true;
     }
 
-    public List<TransactionDTO> getSentPayments(String email) {
+    private List<TransactionDTO> getSentPayments() {
 
         List<Payment> payments = new ArrayList<>();
-        paymentRepository.findByDebitAccount(email).forEach(payments::add);
+        paymentRepository.findByDebitAccount(principalUser.getCurrentUserMail()).forEach(payments::add);
         return payments.stream()
                 .map(payment -> transactionMapper.PaymentMapper(payment, OperationType.DEBIT))
                 .collect(Collectors.toList());
     }
 
-    public List<TransactionDTO> getReceivedPayments(String email) {
+    private List<TransactionDTO> getReceivedPayments() {
         List<Payment> payments = new ArrayList<>();
-        paymentRepository.findByCreditAccount(email).forEach(payments::add);
+        paymentRepository.findByCreditAccount(principalUser.getCurrentUserMail()).forEach(payments::add);
         return payments.stream()
                 .map(payment -> transactionMapper.PaymentMapper(payment, OperationType.CREDIT))
                 .collect(Collectors.toList());
 
 
     }
-
-    public List<TransactionDTO> getAllPayments(String email) {
-        return Stream.concat(getReceivedPayments(email).stream()
-                , getSentPayments(email).stream()
+    @Override
+    public List<TransactionDTO> getAllPayments() {
+        return Stream.concat(getReceivedPayments().stream()
+                , getSentPayments().stream()
         ).collect(Collectors.toList());
     }
 

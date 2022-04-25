@@ -1,10 +1,7 @@
 package com.pmb.PayMyBuddy.service;
 
-import com.pmb.PayMyBuddy.model.Account;
 import com.pmb.PayMyBuddy.model.AppUser;
-import com.pmb.PayMyBuddy.repository.AccountRepository;
 import com.pmb.PayMyBuddy.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,8 +17,13 @@ import java.util.Arrays;
 
 public class AccountDetailsService implements UserDetailsService {
     private final static String USER_NOT_FOUND_MSG = "user with email %S not found";
+
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public AccountDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
