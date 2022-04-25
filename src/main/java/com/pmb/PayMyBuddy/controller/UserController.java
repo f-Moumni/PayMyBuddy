@@ -8,6 +8,7 @@ import com.pmb.PayMyBuddy.exceptions.BalanceNotEmptyException;
 import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
 import com.pmb.PayMyBuddy.security.PrincipalUser;
+import com.pmb.PayMyBuddy.service.IUserService;
 import com.pmb.PayMyBuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ import static org.springframework.http.HttpStatus.OK;
 @CrossOrigin(origins = "*")
 public class UserController {
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
 
     @GetMapping("account")
@@ -52,7 +53,7 @@ public class UserController {
     }
 
     @PostMapping("sign-up")
-    public ResponseEntity<Response> SaveUserAccount(@RequestBody @Valid SignupDTO account) throws AlreadyExistsException {
+    public ResponseEntity<Response> saveUserAccount(@RequestBody @Valid SignupDTO account) throws AlreadyExistsException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("account", userService.addUser(account)))

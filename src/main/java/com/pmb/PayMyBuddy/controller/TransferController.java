@@ -5,6 +5,7 @@ import com.pmb.PayMyBuddy.DTO.TransferDTO;
 import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
 import com.pmb.PayMyBuddy.security.PrincipalUser;
+import com.pmb.PayMyBuddy.service.ITransferService;
 import com.pmb.PayMyBuddy.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +23,14 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/transfer")
 public class TransferController {
     @Autowired
-    TransferService transferService;
+    ITransferService transferService;
 
     @PostMapping()
-    public ResponseEntity<Response> addTransfer(@RequestBody @Valid TransferDTO operation) throws DataNotFoundException, InsufficientFundsException {
+    public ResponseEntity<Response> doTransfer(@RequestBody @Valid TransferDTO operation) throws DataNotFoundException, InsufficientFundsException {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("transfer", transferService.doTransfer(operation)))
-                        .message("transfer done !")
+                        .message("transfer done")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
@@ -40,7 +41,7 @@ public class TransferController {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
                         .data(Map.of("transactions", transferService.getAllTransfers()))
-                        .message(" retrieved")
+                        .message("all retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());

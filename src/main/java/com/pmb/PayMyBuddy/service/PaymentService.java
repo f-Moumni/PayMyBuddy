@@ -8,7 +8,6 @@ import com.pmb.PayMyBuddy.model.Account;
 import com.pmb.PayMyBuddy.model.Payment;
 import com.pmb.PayMyBuddy.repository.AccountRepository;
 import com.pmb.PayMyBuddy.repository.PaymentRepository;
-import com.pmb.PayMyBuddy.repository.TransferRepository;
 import com.pmb.PayMyBuddy.security.PrincipalUser;
 import com.pmb.PayMyBuddy.util.Calculator;
 import com.pmb.PayMyBuddy.util.TransactionMapper;
@@ -28,7 +27,7 @@ import static java.time.LocalDateTime.now;
 @Service
 @Transactional
 @Slf4j
-public class PaymentService {
+public class PaymentService implements IPaymentService {
 
     private final PaymentRepository paymentRepository;
     private final AccountRepository accountRepository;
@@ -54,7 +53,7 @@ public class PaymentService {
      * @return tue is payment is done
      * @throws InsufficientFundsException
      */
-
+@Override
     public boolean doPayment(PaymentDTO paymentDTO) throws InsufficientFundsException {
 
         Account accountDebit = accountRepository.findByMail(principalUser.getCurrentUserMail()).get();
@@ -101,7 +100,7 @@ return false;
 
 
     }
-
+    @Override
     public List<TransactionDTO> getAllPayments() {
         return Stream.concat(getReceivedPayments().stream()
                 , getSentPayments().stream()

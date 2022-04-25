@@ -33,28 +33,28 @@ import static java.time.LocalDateTime.now;
 @Service
 @Transactional
 @Slf4j
-public class TransferService {
+public class TransferService implements ITransferService{
 
 
-
-   private final TransferRepository transferRepository;
+    private final TransferRepository transferRepository;
 
     private final AccountRepository accountRepository;
 
-    private final  TransactionMapper transactionMapper;
+    private final TransactionMapper transactionMapper;
 
     private final PrincipalUser principalUser;
-private final Calculator calculator;
+    private final Calculator calculator;
     private double fee;
     private double total;
-@Autowired
+
+    @Autowired
     public TransferService(TransferRepository transferRepository, AccountRepository accountRepository, TransactionMapper transactionMapper, PrincipalUser principalUser, Calculator calculator) {
         this.transferRepository = transferRepository;
         this.accountRepository = accountRepository;
         this.transactionMapper = transactionMapper;
         this.principalUser = principalUser;
-    this.calculator = calculator;
-}
+        this.calculator = calculator;
+    }
 
     /**
      * sen money to bank account
@@ -63,7 +63,7 @@ private final Calculator calculator;
      * @throws InsufficientFundsException
      * @throws DataNotFoundException
      */
-
+    @Override
     public boolean doTransfer(TransferDTO transferToAdd) throws DataNotFoundException, InsufficientFundsException {
         Account account = accountRepository.findByMail(principalUser.getCurrentUserMail()).get();
         log.info("saving transfer for {}", account.getAccountOwner().getFirstName());
@@ -96,7 +96,7 @@ private final Calculator calculator;
 
     private List<TransactionDTO> getSentTransfers() {
 
-        List<Transfer>  transfers = new ArrayList<>();
+        List<Transfer> transfers = new ArrayList<>();
         transferRepository.findByDebitAccount(principalUser.getCurrentUserMail()).forEach(transfers::add);
         return transfers.stream()
                 .map(transfer -> transactionMapper.transferMapper(transfer, OperationType.DEBIT)).collect(Collectors.toList());
@@ -105,12 +105,12 @@ private final Calculator calculator;
 
     private List<TransactionDTO> getReservedTransfers() {
 
-        List<Transfer>  transfers = new ArrayList<>();
+        List<Transfer> transfers = new ArrayList<>();
         transferRepository.findByCreditAccount(principalUser.getCurrentUserMail()).forEach(transfers::add);
         return transfers.stream()
                 .map(transfer -> transactionMapper.transferMapper(transfer, OperationType.CREDIT)).collect(Collectors.toList());
     }
-
+    @Override
     public List<TransactionDTO> getAllTransfers() {
         return Stream.concat(getReservedTransfers().stream(), getSentTransfers().stream()).collect(Collectors.toList());
     }
