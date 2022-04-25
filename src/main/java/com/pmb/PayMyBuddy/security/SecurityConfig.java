@@ -22,8 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AccountDetailsService accountDetailsService;
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+  /*  @Autowired
+    private AuthEntryPointJwt unauthorizedHandler;*/
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
                 .csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+               // .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/sign-up", "/sign-in").permitAll()
                 .anyRequest().authenticated().and().formLogin()

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 public class PrincipalUser {
    public String getCurrentUserMail(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         User userDetails = (User) authentication.getPrincipal();
         return userDetails.getUsername();
     }
