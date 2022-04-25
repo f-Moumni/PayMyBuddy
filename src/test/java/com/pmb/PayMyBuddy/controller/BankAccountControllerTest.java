@@ -73,66 +73,67 @@ public class BankAccountControllerTest<ApplicationUserService> {
     private IBankAccountService bankAccountService;
     @MockBean
     private AuthenticationManager authenticationManager;
-   @MockBean
+    @MockBean
     private AccountDetailsService accountDetailsService;
     @MockBean
-   private static JwtUtils jwtUtils;
+    private  JwtUtils jwtUtils;
 
-    @MockBean
-    private static Authentication authentication;
     @Autowired
     private WebApplicationContext context;
     private BankAccountDTO bankAccountDTO;
-    private Response response;
-    private BankAccount bankAccount;
+
 
     @BeforeEach
     void setup() {
         bankAccountDTO = new BankAccountDTO("iban545", "swift1111");
         mvc = MockMvcBuilders.webAppContextSetup(context).build();
-        response.builder().data(Map.of("bankAccount",bankAccountDTO));
-
     }
 
     @Test
     @Tag("bankAccount")
     void testGetBankAccount_shouldReturnBankAccountDTO() throws Exception {
-
+        //ARRANGE
         when(bankAccountService.getBankAccount()).thenReturn(bankAccountDTO);
-        //ACT
+        //ACT //ASSERT
         mvc.perform(get("/bankAccount")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$['statusCode']").value(200))
                 .andExpect(jsonPath("$['message']").value("Bank Account retrieved"))
-                .andExpect( jsonPath("$.data['bankAccount'].swift").value(bankAccountDTO.getSwift()))
-                .andExpect( jsonPath("$.data['bankAccount'].iban").value(bankAccountDTO.getIban()));
+                .andExpect(jsonPath("$.data['bankAccount'].swift").value(bankAccountDTO.getSwift()))
+                .andExpect(jsonPath("$.data['bankAccount'].iban").value(bankAccountDTO.getIban()));
     }
+
     @Test
     @Tag("saveBankAccount")
     void testSaveBankAccount_shouldReturnTrue() throws Exception {
+        //ARRANGE
         when(bankAccountService.addBankAccount(any())).thenReturn(true);
-        //ACT
+        //ACT //ASSERT
         mvc.perform(post("/bankAccount").content(JsonTestMapper.asJsonString(bankAccountDTO))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$['message']").value("Bank Account saved"))
-                .andExpect( jsonPath("$.data['bankAccount']").value("true"));
+                .andExpect(jsonPath("$['statusCode']").value(201))
+                .andExpect(jsonPath("$.data['bankAccount']").value("true"));
 
     }
 
     @Test
     @Tag("updateBankAccount")
     void testUpdateBankAccount_shouldReturnTrue() throws Exception {
+        //ARRANGE
         when(bankAccountService.updateBankAccount(any())).thenReturn(true);
-        //ACT
+        //ACT //ASSERT
         mvc.perform(put("/bankAccount").content(JsonTestMapper.asJsonString(bankAccountDTO))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$['statusCode']").value(200))
                 .andExpect(jsonPath("$['message']").value("Bank Account updated"))
-                .andExpect( jsonPath("$.data['bankAccount']").value("true"));
+                .andExpect(jsonPath("$.data['bankAccount']").value("true"));
 
     }
 }
