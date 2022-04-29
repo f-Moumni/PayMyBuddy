@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface BankAccountRepository extends CrudRepository<BankAccount,Long> {
 
     @Query(value = "SELECT bank_account.idbank_account, bank_account.iban ,bank_account.swift,bank_account.owner " +
-            "FROM paymybuddy.bank_account join user on (bank_account.owner =user.iduser) join pmb_account on( user.iduser =pmb_account.owner) where pmb_account.email like :email"
+            "FROM bank_account join user on (bank_account.owner =user.iduser) join pmb_account on( user.iduser =pmb_account.owner) where pmb_account.email like :email"
             , nativeQuery = true)
     Optional<BankAccount> findByOwner_Account_Mail(@Param("email")String mail);
 }

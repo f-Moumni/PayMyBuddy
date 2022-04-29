@@ -40,8 +40,6 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getMail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-
-
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
 }

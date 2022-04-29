@@ -1,6 +1,6 @@
 package com.pmb.PayMyBuddy.security;
 
-import com.pmb.PayMyBuddy.security.jwt.AuthEntryPointJwt;
+
 import com.pmb.PayMyBuddy.security.jwt.AuthTokenFilter;
 import com.pmb.PayMyBuddy.service.AccountDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AccountDetailsService accountDetailsService;
-  /*  @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;*/
+
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -48,14 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
                 .csrf().disable()
-               // .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/sign-up", "/sign-in").permitAll()
-                .anyRequest().authenticated().and().formLogin()
-                .loginPage("/api/sign-in").defaultSuccessUrl("/home")
-                .and()
-                .logout().logoutSuccessUrl("/sign-in")
-                .and().rememberMe();
+                .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 

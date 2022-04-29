@@ -88,9 +88,10 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
-	</dependencies>
+
+    </dependencies>
 
 	<build>
 		<pluginManagement>
@@ -144,6 +145,7 @@
 	</build>
 	<reporting>
 		<plugins>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>

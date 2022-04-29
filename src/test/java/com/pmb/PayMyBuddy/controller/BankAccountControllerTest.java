@@ -77,7 +77,6 @@ public class BankAccountControllerTest<ApplicationUserService> {
     private AccountDetailsService accountDetailsService;
     @MockBean
     private  JwtUtils jwtUtils;
-
     @Autowired
     private WebApplicationContext context;
     private BankAccountDTO bankAccountDTO;

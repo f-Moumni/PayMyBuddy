@@ -5,8 +5,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+
 
 @Entity(name = "transaction")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -54,4 +53,59 @@ public abstract class Transaction {
     @JoinColumn(name = "credit_account")
     private Account creditAccount ;
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public double getFee() {
+        return fee;
+    }
+
+    public void setFee(double fee) {
+        this.fee = fee;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public Account getDebitAccount() {
+        return debitAccount;
+    }
+
+    public void setDebitAccount(Account debitAccount) {
+        this.debitAccount = debitAccount;
+    }
+
+    public Account getCreditAccount() {
+        return creditAccount;
+    }
+
+    public void setCreditAccount(Account creditAccount) {
+        this.creditAccount = creditAccount;
+    }
 }
