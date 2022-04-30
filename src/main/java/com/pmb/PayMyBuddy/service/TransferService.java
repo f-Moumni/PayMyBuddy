@@ -10,6 +10,7 @@ import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
 import com.pmb.PayMyBuddy.model.Account;
 
+import com.pmb.PayMyBuddy.model.Payment;
 import com.pmb.PayMyBuddy.model.Transfer;
 import com.pmb.PayMyBuddy.repository.AccountRepository;
 
@@ -99,7 +100,8 @@ public class TransferService implements ITransferService{
         List<Transfer> transfers = new ArrayList<>();
         transferRepository.findByDebitAccount(principalUser.getCurrentUserMail()).forEach(transfers::add);
         return transfers.stream()
-                .map(transfer -> transactionMapper.transferMapper(transfer, OperationType.DEBIT)).collect(Collectors.toList());
+                .map(transfer -> transactionMapper.transferMapper(transfer, OperationType.DEBIT))
+                .collect(Collectors.toList());
 
     }
 
@@ -108,11 +110,14 @@ public class TransferService implements ITransferService{
         List<Transfer> transfers = new ArrayList<>();
         transferRepository.findByCreditAccount(principalUser.getCurrentUserMail()).forEach(transfers::add);
         return transfers.stream()
-                .map(transfer -> transactionMapper.transferMapper(transfer, OperationType.CREDIT)).collect(Collectors.toList());
+                .map(transfer -> transactionMapper.transferMapper(transfer, OperationType.CREDIT))
+                .collect(Collectors.toList());
     }
     @Override
     public List<TransactionDTO> getAllTransfers() {
-        return Stream.concat(getReservedTransfers().stream(), getSentTransfers().stream()).collect(Collectors.toList());
+        return Stream.concat(getReservedTransfers().stream(), getSentTransfers().stream())
+                .sorted(Comparator.comparing(TransactionDTO::getDateTime).reversed())
+                .collect(Collectors.toList());
     }
 
     private void updatePMBAccount(double fee) {

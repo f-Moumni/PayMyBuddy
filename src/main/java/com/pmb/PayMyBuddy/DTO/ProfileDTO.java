@@ -3,15 +3,16 @@ package com.pmb.PayMyBuddy.DTO;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 
 public class ProfileDTO {
-
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
-
-   @DateTimeFormat
+    @DateTimeFormat
     private LocalDate birthdate;
     @Email
     private String mail;

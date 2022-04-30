@@ -3,11 +3,15 @@ package com.pmb.PayMyBuddy.DTO;
 import com.pmb.PayMyBuddy.constants.OperationType;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 
 public class TransferDTO {
-
+    @NotNull
     private double amount;
+
     private String description ;
+    @NotNull
     private OperationType operationType;
 
     public TransferDTO(double amount, String description, OperationType operationType) {

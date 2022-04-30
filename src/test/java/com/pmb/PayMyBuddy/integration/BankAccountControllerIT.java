@@ -63,14 +63,13 @@ public class BankAccountControllerIT {
 
     @Autowired
     private MockMvc mvc;
-
     private BankAccountDTO bankAccountDTO;
     private static User user ;
     private static SecurityContext securitycontext ;
     @BeforeAll
     public static void init() {
         securitycontext = new SecurityContextImpl();
-        user = new User("doe@exemple.fr","password", List.of(new SimpleGrantedAuthority("USER")));
+        user = new User("john@exemple.fr","password", List.of(new SimpleGrantedAuthority("USER")));
     }
     @BeforeEach
     void setup() throws SQLException {
@@ -80,7 +79,24 @@ public class BankAccountControllerIT {
     }
     @Test
     @Tag("bankAccount")
+    void testGetBankAccount_shouldReturnStatusNotFound() throws Exception {
+        //ACT //ASSERT
+        mvc.perform(get("/bankAccount")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(status().isNotFound())
+                .andExpect(jsonPath("$['message']").value("no bank account attached to this account "));
+    }
+
+    @Test
+    @Tag("bankAccount")
     void testGetBankAccount_shouldReturnBankAccountDTO() throws Exception {
+        //ARRANGE
+        securitycontext = new SecurityContextImpl();
+        user = new User("doe@exemple.fr","password", List.of(new SimpleGrantedAuthority("USER")));
+        bankAccountDTO = new BankAccountDTO("iban222222", "swift22222");
+        securitycontext.setAuthentication(new TestingAuthenticationToken(user, null, Collections.emptyList()));
+        SecurityContextHolder.setContext(securitycontext);
         //ACT //ASSERT
         mvc.perform(get("/bankAccount")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -91,9 +107,12 @@ public class BankAccountControllerIT {
                 .andExpect(jsonPath("$.data['bankAccount'].swift").value(bankAccountDTO.getSwift()))
                 .andExpect(jsonPath("$.data['bankAccount'].iban").value(bankAccountDTO.getIban()));
     }
+
     @Test
     @Tag("saveBankAccount")
     void testSaveBankAccount_shouldReturnTrue() throws Exception {
+        //ARRANGE
+        bankAccountDTO = new BankAccountDTO("iban333333", "swift333333");
         //ACT //ASSERT
         mvc.perform(post("/bankAccount").content(JsonTestMapper.asJsonString(bankAccountDTO))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -107,6 +126,13 @@ public class BankAccountControllerIT {
     @Test
     @Tag("updateBankAccount")
     void testUpdateBankAccount_shouldReturnTrue() throws Exception {
+        //ARRANGE
+        securitycontext = new SecurityContextImpl();
+        user = new User("doe@exemple.fr","password", List.of(new SimpleGrantedAuthority("USER")));
+        bankAccountDTO = new BankAccountDTO("iban333333", "swift333333");
+        securitycontext.setAuthentication(new TestingAuthenticationToken(user, null, Collections.emptyList()));
+        SecurityContextHolder.setContext(securitycontext);
+
         //ACT //ASSERT
         mvc.perform(put("/bankAccount").content(JsonTestMapper.asJsonString(bankAccountDTO))
                         .contentType(MediaType.APPLICATION_JSON)

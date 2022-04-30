@@ -1,14 +1,16 @@
 package com.pmb.PayMyBuddy.DTO;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 public class LoginRequest {
-    @NotBlank
+
     @Email
     private String mail;
 
-    @NotBlank
+    @Size(min = 6, max = 20)
     private String password;
 
     public String getMail() {

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -97,14 +98,12 @@ return false;
         return payments.stream()
                 .map(payment -> transactionMapper.PaymentMapper(payment, OperationType.CREDIT))
                 .collect(Collectors.toList());
-
-
     }
     @Override
     public List<TransactionDTO> getAllPayments() {
         return Stream.concat(getReceivedPayments().stream()
                 , getSentPayments().stream()
-        ).collect(Collectors.toList());
+        ).sorted(Comparator.comparing(TransactionDTO::getDateTime).reversed()).collect(Collectors.toList());
     }
 
     private void updatePMBAccount(double fee) {

@@ -5,14 +5,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class SignupDTO {
+
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
     @DateTimeFormat
     private LocalDate birthDate;
-    @Email(message = "invalid email ")
+    @Email(message = "invalid email")
     private String mail;
     private String password;
 

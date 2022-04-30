@@ -55,7 +55,7 @@ public class TransferControllerIT {
     @BeforeAll
     public static void init() {
         securitycontext = new SecurityContextImpl();
-        user = new User("john@exemple.fr","password", List.of(new SimpleGrantedAuthority("USER")));
+        user = new User("doe@exemple.fr","password", List.of(new SimpleGrantedAuthority("USER")));
     }
     @BeforeEach
     void setup() throws SQLException {

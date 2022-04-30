@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,7 +26,8 @@ public class TransactionService {
 
 
     public List<TransactionDTO> getAllTransactions() {
-        return Stream.concat(paymentService.getAllPayments().stream(),transferService.getAllTransfers().stream()
-        ).collect(Collectors.toList());
+        return Stream.concat(paymentService.getAllPayments().stream(),transferService.getAllTransfers().stream())
+                .sorted(Comparator.comparing(TransactionDTO::getDateTime).reversed())
+                .collect(Collectors.toList());
     }
 }

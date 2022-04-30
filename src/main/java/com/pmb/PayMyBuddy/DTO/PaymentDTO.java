@@ -11,7 +11,9 @@ import java.time.LocalDateTime;
 
 
 public class PaymentDTO {
+    @Email
     private String creditAccountEmail;
+    @NotNull (message = "amount can not be null")
     private double amount;
     @NotNull
     private String description;
