@@ -20,16 +20,17 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
-@Autowired
-    private  JwtUtils jwtUtils;
-@Autowired
-    private  AccountDetailsService accountDetailsService;
-
 
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+    @Autowired
+    private JwtUtils jwtUtils;
+    @Autowired
+    private AccountDetailsService accountDetailsService;
+
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        logger.debug("Filtering JWT Authentication ");
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
@@ -42,11 +43,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             }
         } catch (Exception ex) {
             logger.error("Cannot set user authentication: {}", ex);
-            throw   ex;
+            throw ex;
         }
         filterChain.doFilter(request, response);
     }
+
     private String parseJwt(HttpServletRequest request) {
+        logger.debug("parsing JWT ");
         String headerAuth = request.getHeader("Authorization");
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             return headerAuth.substring(7, headerAuth.length());

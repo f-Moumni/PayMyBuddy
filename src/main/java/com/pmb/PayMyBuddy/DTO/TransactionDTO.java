@@ -5,6 +5,9 @@ import com.pmb.PayMyBuddy.constants.TransactionType;
 
 import java.time.LocalDateTime;
 
+/**
+ * transaction transform object
+ */
 public class TransactionDTO {
 
     private String name;

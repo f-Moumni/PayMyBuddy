@@ -1,7 +1,7 @@
 --   Database: db_payMyBuddy
 -- ------------------------------------------------------
 
-DROP DATABASE IF db_payMyBuddy
+DROP DATABASE IF EXISTS db_payMyBuddy;
 CREATE DATABASE `db_payMyBuddy` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 -- ------------------------------------------------------
@@ -18,8 +18,8 @@ CREATE TABLE `role` (
 --
 -- Dumping data for table `role`
 --
-INSERT INTO `role` (`role_id`,`name`) VALUES (1,'USER');
-INSERT INTO `role` (`role_id`,`name`) VALUES (2,'ADMIN')
+INSERT INTO `role` (`name`) VALUES ('USER');
+INSERT INTO `role` (`name`) VALUES ('ADMIN');
 
 --
 -- Table structure for table `user`
@@ -35,9 +35,9 @@ CREATE TABLE `user` (
 --
 -- Dumping data for table `user`
 --
-INSERT INTO `user` (`iduser`,`first_name`, `last_name`, `birthdate`) VALUES (1,'pmb', 'account', '1954-10-01');
-INSERT INTO `user` (`iduser`,`first_name`, `last_name`, `birthdate`) VALUES (2,'thomas', 'doe', '1954-10-01');
-INSERT INTO `user` (`iduser`,`first_name`, `last_name`, `birthdate`) VALUES (3,'john', 'doe', '1954-10-01');
+INSERT INTO `user` (`first_name`, `last_name`, `birthdate`) VALUES ('pmb', 'account', '1954-10-01');
+INSERT INTO `user` (`first_name`, `last_name`, `birthdate`) VALUES ('thomas', 'doe', '1954-10-01');
+INSERT INTO `user` (`first_name`, `last_name`, `birthdate`) VALUES ('john', 'doe', '1954-10-01');
 
 --
 -- Table structure for table `pmb_account`
@@ -61,9 +61,9 @@ CREATE TABLE `pmb_account` (
 --
 -- Dumping data for table `pmb_account`
 --
-INSERT INTO `pmb_account` (`account_id`,`balance`, `enabled`, `email`, `password`, `owner`, `role`) VALUES (1,'200', '1', 'pmb@exemple.fr', '$2a$10$CTPq2xvwt2f.lSmKqWdUYe8nyqoQNvX2RXKtoH09p.s/z7qbkeoby', '1', '2');
-INSERT INTO `pmb_account` (`account_id`,`balance`, `enabled`, `email`, `password`, `owner`, `role`) VALUES (2,'50', '1', 'doe@exemple.fr', '$2a$10$CTPq2xvwt2f.lSmKqWdUYe8nyqoQNvX2RXKtoH09p.s/z7qbkeoby', '2', '1');
-INSERT INTO `pmb_account` (`account_id`,`balance`, `enabled`, `email`, `password`, `owner`, `role`) VALUES (3,'100', '1', 'john@exemple.fr', '$2a$10$CTPq2xvwt2f.lSmKqWdUYe8nyqoQNvX2RXKtoH09p.s/z7qbkeoby', '3', '1');
+INSERT INTO `pmb_account` (`balance`, `enabled`, `email`, `password`, `owner`, `role`) VALUES ('200', '1', 'pmb@exemple.fr', '$2a$10$CTPq2xvwt2f.lSmKqWdUYe8nyqoQNvX2RXKtoH09p.s/z7qbkeoby', '1', '2');
+INSERT INTO `pmb_account` (`balance`, `enabled`, `email`, `password`, `owner`, `role`) VALUES ('50', '1', 'doe@exemple.fr', '$2a$10$CTPq2xvwt2f.lSmKqWdUYe8nyqoQNvX2RXKtoH09p.s/z7qbkeoby', '2', '1');
+INSERT INTO `pmb_account` (`balance`, `enabled`, `email`, `password`, `owner`, `role`) VALUES ('100', '1', 'john@exemple.fr', '$2a$10$CTPq2xvwt2f.lSmKqWdUYe8nyqoQNvX2RXKtoH09p.s/z7qbkeoby', '3', '1');
 
 --
 -- Table structure for table `contact`
@@ -100,8 +100,8 @@ CREATE TABLE `bank_account` (
 --
 -- Dumping data for table `bank_account`
 --
-INSERT INTO `bank_account` (`idbank_account`,`iban`, `swift`, `owner`) VALUES (1,'iban111111', 'swift111111', '1');
-INSERT INTO `bank_account` (`idbank_account`,`iban`, `swift`, `owner`) VALUES (2,'iban222222', 'swift22222', '2');
+INSERT INTO `bank_account` (`iban`, `swift`, `owner`) VALUES ('iban111111', 'swift111111', '1');
+INSERT INTO `bank_account` (`iban`, `swift`, `owner`) VALUES ('iban222222', 'swift22222', '2');
 
 --
 -- Table structure for table `transaction`
@@ -129,7 +129,7 @@ CREATE TABLE `transaction` (
 --
 -- Dumping data for table `transaction`
 --
-INSERT INTO `transaction` (`idtransaction`,`transaction_type`, `amount`, `date`, `description`, `fee`, `credit_account`, `debit_account`) VALUES (1,'PAYMENT', '88', '2022-04-24 11:45:09', 'shopping', '0.44', '2', '3');
-INSERT INTO `transaction` (`idtransaction`,`transaction_type`, `amount`, `date`, `description`, `fee`, `credit_account`, `debit_account`) VALUES (2,'PAYMENT', '25', '2022-04-24 11:45:55', 'shopping', '0.125', '3', '2');
-INSERT INTO `transaction` (`idtransaction`,`transaction_type`, `amount`, `date`, `description`, `fee`, `credit_account`, `bankaccount`) VALUES (3,'TRANSFER', '40', '2022-04-17 22:48:12', 'mobile', '0.2', '2', '2');
-INSERT INTO `transaction` (`idtransaction`,`transaction_type`, `amount`, `date`, `description`, `fee`, `debit_account`, `bankaccount`) VALUES (4,'TRANSFER', '40', '2022-04-17 22:48:12', 'movie', '0.2', '2', '2');
+INSERT INTO `transaction` (`transaction_type`, `amount`, `date`, `description`, `fee`, `credit_account`, `debit_account`) VALUES ('PAYMENT', '88', '2022-04-24 11:45:09', 'shopping', '0.44', '2', '3');
+INSERT INTO `transaction` (`transaction_type`, `amount`, `date`, `description`, `fee`, `credit_account`, `debit_account`) VALUES ('PAYMENT', '25', '2022-04-24 11:45:55', 'shopping', '0.125', '3', '2');
+INSERT INTO `transaction` (`transaction_type`, `amount`, `date`, `description`, `fee`, `credit_account`, `bankaccount`) VALUES ('TRANSFER', '40', '2022-04-17 22:48:12', 'mobile', '0.2', '2', '2');
+INSERT INTO `transaction` (`transaction_type`, `amount`, `date`, `description`, `fee`, `debit_account`, `bankaccount`) VALUES ('TRANSFER', '40', '2022-04-17 22:48:12', 'movie', '0.2', '2', '2');

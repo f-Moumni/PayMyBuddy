@@ -5,7 +5,9 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
-
+/**
+ * transfer data transfer object for new transfer
+ */
 public class TransferDTO {
     @NotNull
     private double amount;
@@ -18,9 +20,6 @@ public class TransferDTO {
         this.amount = amount;
         this.description = description;
         this.operationType = operationType;
-    }
-
-    public TransferDTO() {
     }
 
     public double getAmount() {

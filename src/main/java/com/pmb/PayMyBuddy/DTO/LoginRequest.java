@@ -5,6 +5,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+/**
+ * the transform object for authentication
+ */
 public class LoginRequest {
 
     @Email

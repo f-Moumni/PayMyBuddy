@@ -8,6 +8,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+/**
+ * transform object to signup or update account
+ */
 public class SignupDTO {
 
     @NotNull
@@ -26,9 +29,6 @@ public class SignupDTO {
         this.birthDate = birthDate;
         this.mail = mail;
         this.password = password;
-    }
-
-    public SignupDTO() {
     }
 
     public String getFirstName() {

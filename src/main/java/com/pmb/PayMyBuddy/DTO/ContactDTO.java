@@ -5,6 +5,9 @@ import lombok.Data;
 
 import javax.validation.constraints.Email;
 
+/**
+ * contact data transform object
+ */
 public class ContactDTO {
     private String firstName;
     private String lastName;
@@ -17,24 +20,16 @@ public class ContactDTO {
         this.email = email;
     }
 
-    public ContactDTO() {
-    }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 
     public String getEmail() {
         return email;

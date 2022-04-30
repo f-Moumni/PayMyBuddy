@@ -17,7 +17,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 To run the app, go to folder `PayMyBuddyAPI`
 
-1. To set up the tables and data in the data base. For this, please run the sql commands present in the *schema.sql* file under the *resources* folder in the code base.
+1. To set up the tables and data in the data base. For this, please run the sql commands present in the *schema.sql* file.
 
 2. Compile and generate the final jar by running command: `mvn package`
 

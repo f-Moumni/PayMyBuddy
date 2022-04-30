@@ -66,13 +66,11 @@ public class BankAccountControllerIT {
     private BankAccountDTO bankAccountDTO;
     private static User user ;
     private static SecurityContext securitycontext ;
-    @BeforeAll
-    public static void init() {
-        securitycontext = new SecurityContextImpl();
-        user = new User("john@exemple.fr","password", List.of(new SimpleGrantedAuthority("USER")));
-    }
+
     @BeforeEach
     void setup() throws SQLException {
+        securitycontext = new SecurityContextImpl();
+        user = new User("john@exemple.fr","password", List.of(new SimpleGrantedAuthority("USER")));
         bankAccountDTO = new BankAccountDTO("iban222222", "swift22222");
         securitycontext.setAuthentication(new TestingAuthenticationToken(user, null, Collections.emptyList()));
         SecurityContextHolder.setContext(securitycontext);

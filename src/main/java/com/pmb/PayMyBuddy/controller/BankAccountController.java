@@ -18,6 +18,9 @@ import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+/**
+ * BankAccountController class allows to do CRUD operations for BankAccount
+ */
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/bankAccount")
@@ -25,6 +28,11 @@ public class BankAccountController {
     @Autowired
     IBankAccountService bankAccountService;
 
+    /**
+     * the end point to get BankAccount
+     * @return response with BankAccount
+     * @throws DataNotFoundException
+     */
     @GetMapping
     public ResponseEntity<Response> getBankAccount() throws DataNotFoundException {
         return ResponseEntity.ok(
@@ -36,6 +44,11 @@ public class BankAccountController {
                         .build());
     }
 
+    /**
+     * the end point to save new BankAccount
+     * @param bAccountToAdd (per of swift and Iban)
+     * @return response with true if saved
+     */
     @PostMapping
     public ResponseEntity<Response> saveBankAccount(@RequestBody BankAccountDTO bAccountToAdd) {
         return ResponseEntity.ok(
@@ -46,11 +59,17 @@ public class BankAccountController {
                         .statusCode(CREATED.value())
                         .build());
     }
+
+    /**
+     * end point to update a given BankAccount
+     * @param bAccount (per of swift and Iban)
+     * @return response with true is BankAccount Saved
+     */
     @PutMapping
-    public ResponseEntity<Response> updateBankAccount(@RequestBody BankAccountDTO bAccountToAdd) {
+    public ResponseEntity<Response> updateBankAccount(@RequestBody BankAccountDTO bAccount) {
         return ResponseEntity.ok(
                 Response.builder().timeStamp(now())
-                        .data(Map.of("bankAccount", bankAccountService.updateBankAccount(bAccountToAdd)))
+                        .data(Map.of("bankAccount", bankAccountService.updateBankAccount(bAccount)))
                         .message("Bank Account updated")
                         .status(OK)
                         .statusCode(OK.value())

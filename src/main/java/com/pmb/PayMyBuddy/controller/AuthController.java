@@ -24,6 +24,9 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * AuthController class  allow to authenticate
+ */
 @CrossOrigin(origins = "*")
 @RestController
 public class AuthController {
@@ -33,7 +36,11 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-
+    /**
+     * authenticateUser allows the user to authenticate
+     * @param loginRequest ( per of email and pass word )
+     * @return jwt
+     */
     @PostMapping("/sign-in")
     public ResponseEntity<JwtResponse> authenticateUser(@RequestBody @ Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(

@@ -12,6 +12,8 @@ import com.pmb.PayMyBuddy.repository.UserRepository;
 import com.pmb.PayMyBuddy.security.PrincipalUser;
 import com.pmb.PayMyBuddy.util.AccountMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +21,18 @@ import javax.transaction.Transactional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * contain all business service methods for contact
+ */
 @Service
 @Transactional
 @Slf4j
 public class ContactService implements IContactService {
+    private static final Logger logger = LoggerFactory.getLogger(ContactService.class);
 
     private final AccountRepository accountRepository;
-
     private final UserRepository userRepository;
-
     private final AccountMapper accountMapper;
-
     private final PrincipalUser principalUser;
 
     @Autowired
@@ -40,15 +43,11 @@ public class ContactService implements IContactService {
         this.principalUser = principalUser;
     }
 
-    /**
-     * add contact between two users
-     *
-     * @param
-     * @return true if added, false if not
-     * @throws DataNotFoundException
-     */
 
-    @Override
+/**
+ * {@inheritDoc}
+ */
+ @Override
     public ContactDTO addContact(String contactMail) throws AlreadyExistsException, DataNotFoundException {
 
         log.info("adding contact with email {}", contactMail);
@@ -67,14 +66,11 @@ public class ContactService implements IContactService {
         }
     }
 
-    /**
-     * delete contact between two users
-     *
-     * @param
-     * @return true if deleted, false if not
-     */
 
-    @Override
+/**
+ * {@inheritDoc}
+ */
+ @Override
     public Boolean deleteContact(String contactMail) {
         log.info("deleting contact with email {}", contactMail);
         AppUser owner = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).get();
@@ -84,8 +80,10 @@ public class ContactService implements IContactService {
         return true;
     }
 
-
-    @Override
+/**
+ * {@inheritDoc}
+ */
+ @Override
     public Set<ContactDTO> getContacts() {
         log.info("getting all contacts of email {}", principalUser.getCurrentUserMail());
         AppUser owner = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).get();

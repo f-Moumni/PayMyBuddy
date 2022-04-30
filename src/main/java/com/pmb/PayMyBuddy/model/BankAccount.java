@@ -11,15 +11,28 @@ import java.util.List;
 @Entity
 @Table(name = "bank_account")
 public class BankAccount {
+    /**
+     * Bank account ID
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idbank_account")
     private long id;
+
+    /**
+     * Bank account Iban
+     */
     @NotBlank
     private String iban;
     @NotBlank
-    private String swift;
 
+    /**
+     * Bank account Swift
+     */
+    private String swift;
+    /**
+     * bank account Owner
+     */
     @OneToOne (cascade = {
             CascadeType.MERGE,
             CascadeType.PERSIST

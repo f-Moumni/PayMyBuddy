@@ -12,6 +12,8 @@ import com.pmb.PayMyBuddy.security.PrincipalUser;
 import com.pmb.PayMyBuddy.util.Calculator;
 import com.pmb.PayMyBuddy.util.TransactionMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,11 +27,14 @@ import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.now;
 
+/**
+ * contain all business service methods for payment
+ */
 @Service
 @Transactional
-@Slf4j
 public class PaymentService implements IPaymentService {
 
+    private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
     private final PaymentRepository paymentRepository;
     private final AccountRepository accountRepository;
     private final TransactionMapper transactionMapper;
@@ -48,18 +53,14 @@ public class PaymentService implements IPaymentService {
     }
 
     /**
-     * send money to contact
-     *
-     * @param paymentDTO
-     * @return tue is payment is done
-     * @throws InsufficientFundsException
+     * {@inheritDoc}
      */
-@Override
+    @Override
     public boolean doPayment(PaymentDTO paymentDTO) throws InsufficientFundsException {
 
         Account accountDebit = accountRepository.findByMail(principalUser.getCurrentUserMail()).get();
         Account accountCredit = accountRepository.findByMail(paymentDTO.getCreditAccountEmail()).get();
-        log.info("saving payment to {} {}", accountCredit.getAccountOwner().getFirstName(),
+        logger.info("saving payment to {} {}", accountCredit.getAccountOwner().getFirstName(),
                 accountCredit.getAccountOwner().getLastName());
         if (accountDebit.isEnabled() &&//account is active
                 accountCredit.isEnabled() && accountDebit.getAccountOwner().getContacts()
@@ -74,17 +75,23 @@ public class PaymentService implements IPaymentService {
                 paymentRepository.save(
                         new Payment(paymentDTO.getAmount(), fee, paymentDTO.getDescription(), now(), accountDebit, accountCredit));
             } else {
+                logger.error("pour balance ");
                 throw new InsufficientFundsException("poor balance");
             }
             updatePMBAccount(fee);// update admin account
             return true;
         }
-return false;
+        return false;
 
     }
 
+    /**
+     * get all sent payments
+     *
+     * @return
+     */
     private List<TransactionDTO> getSentPayments() {
-
+logger.debug("get all sent payments");
         List<Payment> payments = new ArrayList<>();
         paymentRepository.findByDebitAccount(principalUser.getCurrentUserMail()).forEach(payments::add);
         return payments.stream()
@@ -92,21 +99,38 @@ return false;
                 .collect(Collectors.toList());
     }
 
+    /**
+     * get all received payments
+     *
+     * @return
+     */
     private List<TransactionDTO> getReceivedPayments() {
+        logger.debug("get all received payments");
         List<Payment> payments = new ArrayList<>();
         paymentRepository.findByCreditAccount(principalUser.getCurrentUserMail()).forEach(payments::add);
         return payments.stream()
                 .map(payment -> transactionMapper.PaymentMapper(payment, OperationType.CREDIT))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<TransactionDTO> getAllPayments() {
+        logger.debug("get all payments");
         return Stream.concat(getReceivedPayments().stream()
                 , getSentPayments().stream()
         ).sorted(Comparator.comparing(TransactionDTO::getDateTime).reversed()).collect(Collectors.toList());
     }
 
+    /**
+     * update admin account
+     *
+     * @param fee
+     */
     private void updatePMBAccount(double fee) {
+        logger.debug("update admin account");
         Account pmbAccount = accountRepository.findById(1L).get();
         pmbAccount.setBalance(pmbAccount.getBalance() + fee);
         accountRepository.save(pmbAccount);
