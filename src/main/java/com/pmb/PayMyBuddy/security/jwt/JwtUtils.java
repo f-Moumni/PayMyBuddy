@@ -19,7 +19,13 @@ public class JwtUtils {
     @Value("${paymybuddy.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
+    /**
+     * generate JWT
+     * @param authentication
+     * @return JWT
+     */
     public String generateJwtToken(Authentication authentication) {
+        logger.debug("generation of JWT");
         User userPrincipal = (User) authentication.getPrincipal();
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
@@ -29,11 +35,23 @@ public class JwtUtils {
                 .compact();
     }
 
+    /**
+     * get username from JWT
+     * @param token JWT
+     * @return username
+     */
     public String getUserNameFromJwtToken(String token) {
+        logger.debug("getting Username from JWT");
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
+    /**
+     * validate JWT
+     * @param authToken
+     * @return true is token is valid
+     */
     public boolean validateJwtToken(String authToken) {
+        logger.debug("validation of JWT");
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;

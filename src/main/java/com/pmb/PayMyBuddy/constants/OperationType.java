@@ -1,5 +1,8 @@
 package com.pmb.PayMyBuddy.constants;
 
+/**
+ * Operation type enum
+ */
 public enum OperationType {
 
     DEBIT ("DEBIT") ,CREDIT("CREDIT");

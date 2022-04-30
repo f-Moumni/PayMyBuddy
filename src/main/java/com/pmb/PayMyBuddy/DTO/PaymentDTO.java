@@ -9,9 +9,13 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-
+/**
+ * the transform object for new payment
+ */
 public class PaymentDTO {
+    @Email
     private String creditAccountEmail;
+    @NotNull (message = "amount can not be null")
     private double amount;
     @NotNull
     private String description;
@@ -22,16 +26,12 @@ public class PaymentDTO {
         this.description = description;
     }
 
-    public PaymentDTO() {
-    }
+
 
     public String getCreditAccountEmail() {
         return creditAccountEmail;
     }
 
-    public void setCreditAccountEmail(String creditAccountEmail) {
-        this.creditAccountEmail = creditAccountEmail;
-    }
 
     public double getAmount() {
         return amount;

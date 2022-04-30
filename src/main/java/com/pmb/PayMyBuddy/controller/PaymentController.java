@@ -18,6 +18,9 @@ import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+/**
+ * PaymentController  class allows to add and get all Payments
+ */
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/payment")
@@ -25,7 +28,10 @@ public class PaymentController {
     @Autowired
     IPaymentService paymentService;
 
-
+    /**
+     * the end point to get all payments of current user
+     * @return response with list of transactionDTO
+     */
     @GetMapping("/all")
     public ResponseEntity<Response> getAllPayments()  {
         return ResponseEntity.ok(
@@ -36,6 +42,13 @@ public class PaymentController {
                         .statusCode(OK.value())
                         .build());
     }
+
+    /**
+     * the end point to do new payment
+     * @param operation payment DTO to do
+     * @return response with True if payment is done
+     * @throws InsufficientFundsException
+     */
     @PostMapping()
     public ResponseEntity<Response> doPayment(@RequestBody @Valid PaymentDTO operation) throws InsufficientFundsException {
         return ResponseEntity.ok(

@@ -22,6 +22,9 @@ import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+/**
+ * UserController class allows to do CRUD operations for User
+ */
 @RestController
 @RequestMapping(value = "api")
 @CrossOrigin(origins = "*")
@@ -29,7 +32,11 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-
+    /**
+     * endpoint to get profile of current user
+     * @returnr response with profile of current user
+     * @throws DataNotFoundException
+     */
     @GetMapping("account")
     public ResponseEntity<Response> GetProfile() throws DataNotFoundException {
         return ResponseEntity.ok(
@@ -41,6 +48,11 @@ public class UserController {
                         .build());
     }
 
+    /**
+     * end point to update current user account
+     * @param accountToUpdate
+     * @return
+     */
     @PutMapping("account")
     public ResponseEntity<Response> updateUserAccount(@RequestBody @Valid SignupDTO accountToUpdate) {
         return ResponseEntity.ok(
@@ -52,6 +64,12 @@ public class UserController {
                         .build());
     }
 
+    /**
+     * end point to register a new user
+     * @param account SignupDTO of a new user
+     * @return response with true is saved
+     * @throws AlreadyExistsException
+     */
     @PostMapping("sign-up")
     public ResponseEntity<Response> saveUserAccount(@RequestBody @Valid SignupDTO account) throws AlreadyExistsException {
         return ResponseEntity.ok(
@@ -63,6 +81,12 @@ public class UserController {
                         .build());
     }
 
+    /**
+     * end point to delete user from application
+     * @return response withe true is done
+     * @throws DataNotFoundException
+     * @throws BalanceNotEmptyException
+     */
     @DeleteMapping("account")
     public ResponseEntity<Response> deleteUser() throws DataNotFoundException, BalanceNotEmptyException {
         return ResponseEntity.ok(

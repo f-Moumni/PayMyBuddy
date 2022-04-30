@@ -13,43 +13,47 @@ import com.pmb.PayMyBuddy.repository.UserRepository;
 import com.pmb.PayMyBuddy.security.PrincipalUser;
 import com.pmb.PayMyBuddy.util.AccountMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-
+/**
+ * contain all business service methods for user
+ */
 @Service
 @Transactional
-@Slf4j
 public class UserService implements IUserService {
-
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final AccountMapper accountMapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final PrincipalUser principalUser;
-
-@Autowired
+    private String message;
+    @Autowired
     public UserService(UserRepository userRepository, AccountMapper accountMapper, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository, PrincipalUser principalUser) {
         this.userRepository = userRepository;
         this.accountMapper = accountMapper;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
-    this.principalUser = principalUser;
-}
+        this.principalUser = principalUser;
+    }
 
-    private String message;
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Boolean deleteUser() throws DataNotFoundException, BalanceNotEmptyException {
-        log.info("deleting account of {} ", principalUser.getCurrentUserMail());
+        logger.info("deleting account of {} ", principalUser.getCurrentUserMail());
         AppUser appUserToDelete = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail())
                 .orElseThrow(() -> new DataNotFoundException("Account not found"));
         if (appUserToDelete.getAccount().getBalance() != 0) {
             message = "account not empty balance =" + appUserToDelete.getAccount().getBalance();
-            log.error(message);
+            logger.error(message);
             throw new BalanceNotEmptyException(message);
         } else {
             appUserToDelete.removeAccount(appUserToDelete);
@@ -57,13 +61,15 @@ public class UserService implements IUserService {
             return true;
         }
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ProfileDTO addUser(SignupDTO newUser) throws AlreadyExistsException {
-        log.info("saving account of {} {}", newUser.getFirstName(), newUser.getLastName());
+        logger.info("saving account of {} {}", newUser.getFirstName(), newUser.getLastName());
         if (userRepository.findByAccount_Mail(newUser.getMail()).isPresent()) {
             message = "an account already exists with this email ";
-            log.error(message, newUser.getMail());
+            logger.error(message, newUser.getMail());
             throw new AlreadyExistsException(message + newUser.getMail());
         }
         AppUser newAppUser = new AppUser(newUser.getFirstName(), newUser.getLastName(), newUser.getBirthDate());
@@ -77,20 +83,16 @@ public class UserService implements IUserService {
     }
 
     /**
-     * update given account
-     *
-     * @param userToUpdate
-     * @return
-     * @throws DataNotFoundException
+     * {@inheritDoc}
      */
     @Override
     public ProfileDTO updateUser(SignupDTO userToUpdate) {
-        log.info("updating account of {} {}", userToUpdate.getFirstName(), userToUpdate.getLastName());
+        logger.info("updating account of {} {}", userToUpdate.getFirstName(), userToUpdate.getLastName());
         AppUser appUser = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).get();
         appUser.setFirstName(userToUpdate.getFirstName());
         appUser.setLastName(userToUpdate.getLastName());
         appUser.setBirthDate(userToUpdate.getBirthDate());
-        if(userToUpdate.getPassword()!= null){
+        if (userToUpdate.getPassword() != null) {
             appUser.getAccount().setPassword(passwordEncoder.encode(userToUpdate.getPassword()));
         }
         appUser.getAccount().setMail(userToUpdate.getMail());
@@ -98,9 +100,13 @@ public class UserService implements IUserService {
         return accountMapper.toProfileDTO(appUser.getAccount());
 
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ProfileDTO getUser() throws DataNotFoundException {
+        logger.info("get current user");
         AppUser appUser = userRepository.findByAccount_Mail(principalUser.getCurrentUserMail()).orElseThrow(() -> new DataNotFoundException("account not found"));
-        return accountMapper.toProfileDTO(appUser.getAccount());}
+        return accountMapper.toProfileDTO(appUser.getAccount());
+    }
 }

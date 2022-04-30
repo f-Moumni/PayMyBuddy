@@ -3,20 +3,23 @@ package com.pmb.PayMyBuddy.DTO;
 import com.pmb.PayMyBuddy.constants.OperationType;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 
+/**
+ * transfer data transfer object for new transfer
+ */
 public class TransferDTO {
-
+    @NotNull
     private double amount;
+
     private String description ;
+    @NotNull
     private OperationType operationType;
 
     public TransferDTO(double amount, String description, OperationType operationType) {
         this.amount = amount;
         this.description = description;
         this.operationType = operationType;
-    }
-
-    public TransferDTO() {
     }
 
     public double getAmount() {

@@ -15,6 +15,10 @@ import java.util.Map;
 
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.OK;
+
+/**
+ * ContactController class allows to do CRUD operations for Contact
+ */
 @RestController
 @RequestMapping("/contact")
 @CrossOrigin(origins = "*")
@@ -22,7 +26,13 @@ public class ContactController {
 @Autowired
 IContactService contactService;
 
-
+    /**
+     * endpoint to Add new contact in contacts list of current user
+     * @param mail the contact email
+     * @return  contact DTO of contact added
+     * @throws AlreadyExistsException
+     * @throws DataNotFoundException
+     */
     @PostMapping
     public ResponseEntity<Response> addContact(@RequestParam @Valid String mail ) throws AlreadyExistsException, DataNotFoundException {
         return ResponseEntity.ok(
@@ -33,6 +43,12 @@ IContactService contactService;
                         .statusCode(OK.value())
                         .build());
     }
+
+    /**
+     * endpoint to remove a given contact from  contacts list of current user
+     * @param mail contact email
+     * @return response with true if removed
+     */
     @DeleteMapping
     public ResponseEntity<Response> removeContact(@RequestParam @Valid String mail) {
         return ResponseEntity.ok(
@@ -43,6 +59,11 @@ IContactService contactService;
                         .statusCode(OK.value())
                         .build());
     }
+
+    /**
+     * end point to get all contacts of current user
+     * @return list of ContactDTO
+     */
     @GetMapping("/all")
     public ResponseEntity<Response> getContacts(){
         return ResponseEntity.ok(

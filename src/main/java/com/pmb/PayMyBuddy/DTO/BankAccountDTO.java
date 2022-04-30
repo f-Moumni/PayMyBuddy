@@ -1,8 +1,18 @@
 package com.pmb.PayMyBuddy.DTO;
 
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+/**
+ * bankAccount data transform Object
+ */
 public class BankAccountDTO {
+    @NotBlank(message = "iban can not be empty or blank")
+    @NotNull(message = "iban can not be null")
     private String iban;
+    @NotBlank(message = "swift can not be empty or blank")
+    @NotNull(message = "swift can not be null")
     private String swift;
 
     public String getIban() {

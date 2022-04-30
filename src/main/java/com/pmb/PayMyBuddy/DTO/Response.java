@@ -10,7 +10,9 @@ import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
-
+/**
+ * the endpoint response object
+ */
 @SuperBuilder
 @JsonInclude(NON_NULL)
 public class Response {
