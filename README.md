@@ -62,7 +62,7 @@ __Endpoints__
 
 ### UML
 
-![UML](img/uml.png)
+![UML](img/UML.png)
 
 ### MPD
 
