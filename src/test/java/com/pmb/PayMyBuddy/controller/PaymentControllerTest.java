@@ -5,6 +5,7 @@ import com.pmb.PayMyBuddy.DTO.PaymentDTO;
 import com.pmb.PayMyBuddy.DTO.TransactionDTO;
 import com.pmb.PayMyBuddy.constants.OperationType;
 import com.pmb.PayMyBuddy.constants.TransactionType;
+import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
 import com.pmb.PayMyBuddy.security.jwt.JwtUtils;
 import com.pmb.PayMyBuddy.service.AccountDetailsService;
 import com.pmb.PayMyBuddy.service.IContactService;
@@ -105,6 +106,18 @@ public class PaymentControllerTest {
                 .andExpect(jsonPath("$['statusCode']").value(201))
                 .andExpect(jsonPath("$.data['payment']").value(true));
 
+    }
+    @Test
+    @Tag("doPayment")
+    void testDoPayment_withPoorBalanceShouldReturnStatusConflict() throws Exception {
+        //ARRANGE
+        PaymentDTO  paymentDTO = new PaymentDTO("doe@exemple.fr", 20, "movie");
+        when(paymentService.doPayment(any())).thenThrow(InsufficientFundsException.class);
+        //ACT //ASSERT
+        mvc.perform(post("/payment")
+                        .contentType(MediaType.APPLICATION_JSON).content(JsonTestMapper.asJsonString(paymentDTO))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(status().isConflict());
     }
 
 }

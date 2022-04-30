@@ -91,7 +91,6 @@ public class BankAccountControllerIT {
                 .andExpect(jsonPath("$.data['bankAccount'].swift").value(bankAccountDTO.getSwift()))
                 .andExpect(jsonPath("$.data['bankAccount'].iban").value(bankAccountDTO.getIban()));
     }
-
     @Test
     @Tag("saveBankAccount")
     void testSaveBankAccount_shouldReturnTrue() throws Exception {
@@ -103,7 +102,6 @@ public class BankAccountControllerIT {
                 .andExpect(jsonPath("$['message']").value("Bank Account saved"))
                 .andExpect(jsonPath("$['statusCode']").value(201))
                 .andExpect(jsonPath("$.data['bankAccount']").value("true"));
-
     }
 
     @Test

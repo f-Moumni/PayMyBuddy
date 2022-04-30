@@ -1,17 +1,14 @@
 INSERT INTO `user` (`iduser`,`first_name`, `last_name`, `birthdate`) VALUES (1,'pmb', 'account', '1954-10-01');
 INSERT INTO `user` (`iduser`,`first_name`, `last_name`, `birthdate`) VALUES (2,'thomas', 'doe', '1954-10-01');
-INSERT INTO `user` (`iduser`,`first_name`, `last_name`, `birthdate`) VALUES (3,'joe', 'doe', '1954-10-01');
+INSERT INTO `user` (`iduser`,`first_name`, `last_name`, `birthdate`) VALUES (3,'john', 'doe', '1954-10-01');
 
 INSERT INTO `role` (`role_id`,`name`) VALUES (1,'USER');
 INSERT INTO `role` (`role_id`,`name`) VALUES (2,'ADMIN');
 
 INSERT INTO `pmb_account` (`account_id`,`balance`, `enabled`, `email`, `password`, `owner`, `role`) VALUES (1,'200', '1', 'pmb@exemple.fr', '$2a$10$CTPq2xvwt2f.lSmKqWdUYe8nyqoQNvX2RXKtoH09p.s/z7qbkeoby', '1', '2');
-INSERT INTO `pmb_account` (`account_id`,`balance`, `enabled`, `email`, `password`, `owner`, `role`) VALUES (2,'100', '1', 'doe@exemple.fr', '$2a$10$CTPq2xvwt2f.lSmKqWdUYe8nyqoQNvX2RXKtoH09p.s/z7qbkeoby', '2', '1');
-INSERT INTO `pmb_account` (`account_id`,`balance`, `enabled`, `email`, `password`, `owner`, `role`) VALUES (3,'100', '1', 'thomas@exemple.fr', '$2a$10$CTPq2xvwt2f.lSmKqWdUYe8nyqoQNvX2RXKtoH09p.s/z7qbkeoby', '3', '1');
+INSERT INTO `pmb_account` (`account_id`,`balance`, `enabled`, `email`, `password`, `owner`, `role`) VALUES (2,'0', '1', 'doe@exemple.fr', '$2a$10$CTPq2xvwt2f.lSmKqWdUYe8nyqoQNvX2RXKtoH09p.s/z7qbkeoby', '2', '1');
+INSERT INTO `pmb_account` (`account_id`,`balance`, `enabled`, `email`, `password`, `owner`, `role`) VALUES (3,'100', '1', 'john@exemple.fr', '$2a$10$CTPq2xvwt2f.lSmKqWdUYe8nyqoQNvX2RXKtoH09p.s/z7qbkeoby', '3', '1');
 
-
-INSERT INTO `contact` (`owner_id`, `contact_id`) VALUES ('1', '2');
-INSERT INTO `contact` (`owner_id`, `contact_id`) VALUES ('2', '1');
 INSERT INTO `contact` (`owner_id`, `contact_id`) VALUES ('3', '2');
 INSERT INTO `contact` (`owner_id`, `contact_id`) VALUES ('2', '3');
 

@@ -62,7 +62,7 @@ public class UserService implements IUserService {
     public ProfileDTO addUser(SignupDTO newUser) throws AlreadyExistsException {
         log.info("saving account of {} {}", newUser.getFirstName(), newUser.getLastName());
         if (userRepository.findByAccount_Mail(newUser.getMail()).isPresent()) {
-            message = "an account already exists with this email";
+            message = "an account already exists with this email ";
             log.error(message, newUser.getMail());
             throw new AlreadyExistsException(message + newUser.getMail());
         }

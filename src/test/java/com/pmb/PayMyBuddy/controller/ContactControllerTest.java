@@ -2,6 +2,8 @@ package com.pmb.PayMyBuddy.controller;
 
 import com.pmb.PayMyBuddy.DTO.BankAccountDTO;
 import com.pmb.PayMyBuddy.DTO.ContactDTO;
+import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import com.pmb.PayMyBuddy.security.jwt.JwtUtils;
 import com.pmb.PayMyBuddy.service.AccountDetailsService;
 import com.pmb.PayMyBuddy.service.IBankAccountService;
@@ -27,12 +29,12 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 import java.util.Set;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Import({ TestSecurityConfig.class})
 @ExtendWith(SpringExtension.class)
@@ -105,5 +107,29 @@ public class ContactControllerTest {
                 .andExpect(jsonPath("$.data['contact'].firstName").value(contactDTO.getFirstName()))
                 .andExpect(jsonPath("$.data['contact'].lastName").value(contactDTO.getLastName()))
                 .andExpect(jsonPath("$.data['contact'].email").value(contactDTO.getEmail()));
+    }
+    @Test
+    @Tag("AddContact")
+    void testAddContact_shouldReturnNotFound() throws Exception {
+        //ARRANGE
+        when(contactService.addContact(anyString())).thenThrow(DataNotFoundException.class);
+        //ACT //ASSERT
+        mvc.perform(post("/contact")
+                        .contentType(MediaType.APPLICATION_JSON).param("mail", "doe@exemple.fr ")
+                        .accept(MediaType.APPLICATION_JSON))  .andDo(print())
+                .andExpect(status().isNotFound());
+
+    }
+    @Test
+    @Tag("AddContact")
+    void testAddContact_shouldReturnStatusConflict() throws Exception {
+        //ARRANGE
+        when(contactService.addContact(anyString())).thenThrow(AlreadyExistsException.class);
+        //ACT //ASSERT
+        mvc.perform(post("/contact")
+                        .contentType(MediaType.APPLICATION_JSON).param("mail", "doe@exemple.fr ")
+                        .accept(MediaType.APPLICATION_JSON))  .andDo(print())
+                .andExpect(status().isConflict());
+
     }
 }

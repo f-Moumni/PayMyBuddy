@@ -5,6 +5,8 @@ import com.pmb.PayMyBuddy.DTO.TransactionDTO;
 import com.pmb.PayMyBuddy.DTO.TransferDTO;
 import com.pmb.PayMyBuddy.constants.OperationType;
 import com.pmb.PayMyBuddy.constants.TransactionType;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
+import com.pmb.PayMyBuddy.exceptions.InsufficientFundsException;
 import com.pmb.PayMyBuddy.security.jwt.JwtUtils;
 import com.pmb.PayMyBuddy.service.AccountDetailsService;
 import com.pmb.PayMyBuddy.service.IPaymentService;
@@ -97,6 +99,32 @@ public class TransferControllerTest {
                 .andExpect(jsonPath("$['message']").value("transfer done"))
                 .andExpect(jsonPath("$['statusCode']").value(200))
                 .andExpect(jsonPath("$.data['transfer']").value(true));
+
+    }
+    @Test
+    @Tag("doTransfer")
+    void testDoTransfer_withPoorBalanceShouldReturnStatusConflict() throws Exception {
+        //ARRANGE
+        TransferDTO transferDTO = new TransferDTO( 20, "movie",OperationType.DEBIT);
+        when(transferService.doTransfer(any())).thenThrow(InsufficientFundsException.class);
+        //ACT //ASSERT
+        mvc.perform(post("/transfer")
+                        .contentType(MediaType.APPLICATION_JSON).content(JsonTestMapper.asJsonString(transferDTO))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(status().isConflict());
+
+    }
+    @Test
+    @Tag("doTransfer")
+    void testDoTransfer_withNonBankAccountShouldReturnNotFound() throws Exception {
+        //ARRANGE
+        TransferDTO transferDTO = new TransferDTO( 20, "movie",OperationType.DEBIT);
+        when(transferService.doTransfer(any())).thenThrow(DataNotFoundException.class);
+        //ACT //ASSERT
+        mvc.perform(post("/transfer")
+                        .contentType(MediaType.APPLICATION_JSON).content(JsonTestMapper.asJsonString(transferDTO))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(status().isNotFound());
 
     }
 }

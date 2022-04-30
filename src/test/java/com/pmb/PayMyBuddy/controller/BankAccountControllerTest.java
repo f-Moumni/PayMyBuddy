@@ -3,6 +3,7 @@ package com.pmb.PayMyBuddy.controller;
 import com.pmb.PayMyBuddy.DTO.BankAccountDTO;
 import com.pmb.PayMyBuddy.DTO.LoginRequest;
 import com.pmb.PayMyBuddy.DTO.Response;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import com.pmb.PayMyBuddy.model.BankAccount;
 import com.pmb.PayMyBuddy.security.jwt.AuthEntryPointJwt;
 import com.pmb.PayMyBuddy.security.jwt.JwtUtils;
@@ -53,6 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
@@ -102,6 +104,19 @@ public class BankAccountControllerTest<ApplicationUserService> {
                 .andExpect(jsonPath("$['message']").value("Bank Account retrieved"))
                 .andExpect(jsonPath("$.data['bankAccount'].swift").value(bankAccountDTO.getSwift()))
                 .andExpect(jsonPath("$.data['bankAccount'].iban").value(bankAccountDTO.getIban()));
+    }
+    @Test
+    @Tag("bankAccount")
+    void testGetBankAccount_shouldErrorNotfound() throws Exception {
+        //ARRANGE
+        when(bankAccountService.getBankAccount()).thenThrow(DataNotFoundException.class);
+        //ACT //ASSERT
+        mvc.perform(get("/bankAccount")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
     }
 
     @Test

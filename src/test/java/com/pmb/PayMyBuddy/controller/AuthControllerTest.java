@@ -83,7 +83,7 @@ public class AuthControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(JsonTestMapper.asJsonString(loginRequest))).andDo(print())
                 .andExpect(status().isOk()).andExpect(content()
-                        .string(JsonTestMapper.asJsonString(new JwtResponse("token"))));;
+                        .string(JsonTestMapper.asJsonString(new JwtResponse("token"))));
     }
 
 

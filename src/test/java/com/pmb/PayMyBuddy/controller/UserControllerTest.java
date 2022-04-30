@@ -2,6 +2,9 @@ package com.pmb.PayMyBuddy.controller;
 
 import com.pmb.PayMyBuddy.DTO.ProfileDTO;
 import com.pmb.PayMyBuddy.DTO.SignupDTO;
+import com.pmb.PayMyBuddy.exceptions.AlreadyExistsException;
+import com.pmb.PayMyBuddy.exceptions.BalanceNotEmptyException;
+import com.pmb.PayMyBuddy.exceptions.DataNotFoundException;
 import com.pmb.PayMyBuddy.security.jwt.JwtUtils;
 import com.pmb.PayMyBuddy.service.AccountDetailsService;
 import com.pmb.PayMyBuddy.service.ITransferService;
@@ -76,7 +79,20 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.data['account'].lastName").value(profileDTO.getLastName()))
                 .andExpect(jsonPath("$.data['account'].mail").value(profileDTO.getMail()));
     }
-@Test
+    @Test
+    @Tag("SaveUserAccount")
+    void testSaveUserAccount_shouldReturnStatusConflict() throws Exception {
+        //ARRANGE
+        when(userService.addUser(any())).thenThrow(AlreadyExistsException.class);
+        //ACT //ASSERT
+        mvc.perform(post("/api/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON).content(JsonTestMapper.asJsonString(signupDTO))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(status().isConflict());
+
+    }
+
+    @Test
     @Tag("UpdateUserAccount")
     void testUpdateUserAccount_shouldReturnProfileDTO() throws Exception {
         //ARRANGE
@@ -110,6 +126,17 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.data['account'].lastName").value(profileDTO.getLastName()))
                 .andExpect(jsonPath("$.data['account'].mail").value(profileDTO.getMail()));
     }
+    @Test
+    @Tag("GetProfile")
+    void testGetProfile_shouldReturnStatusNotFound() throws Exception {
+        //ARRANGE
+        when(userService.getUser()).thenThrow(DataNotFoundException.class);
+        //ACT //ASSERT
+        mvc.perform(get("/api/account")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(status().isNotFound());
+    }
 
     @Test
     @Tag("deleteUser")
@@ -124,6 +151,32 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$['message']").value("Account deleted"))
                 .andExpect(jsonPath("$['statusCode']").value(200))
                 .andExpect(jsonPath("$.data['account']").value(true));
+
+    }
+
+    @Test
+    @Tag("deleteUser")
+    void testDeleteUser_shouldStatusNotFound() throws Exception {
+        //ARRANGE
+        when(userService.deleteUser()).thenThrow(DataNotFoundException.class);
+        //ACT //ASSERT
+        mvc.perform(delete("/api/account")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    @Tag("deleteUser")
+    void testDeleteUser_shouldStatusConflict() throws Exception {
+        //ARRANGE
+        when(userService.deleteUser()).thenThrow(BalanceNotEmptyException.class);
+        //ACT //ASSERT
+        mvc.perform(delete("/api/account")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(status().isConflict());
 
     }
 }

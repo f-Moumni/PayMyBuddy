@@ -61,7 +61,7 @@ public class AuthTokenFilterTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        // authTokenFilter = new AuthTokenFilter();
+
     }
 
     @Test
@@ -160,7 +160,6 @@ public class AuthTokenFilterTest {
         request.addHeader("", " " );
         request.setRequestURI(testUri);
         response = new MockHttpServletResponse();
-/// TODO: 23/04/2022 add test for header empty
         //ACT
         authTokenFilter.doFilterInternal(request, response, filterChain);
         //ASSERT
