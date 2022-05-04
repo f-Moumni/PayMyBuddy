@@ -3,7 +3,7 @@
 
 DROP DATABASE IF EXISTS db_payMyBuddy;
 CREATE DATABASE `db_payMyBuddy` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-
+USE db_payMyBuddy;
 -- ------------------------------------------------------
 --
 -- Table structure for table `role`
@@ -49,12 +49,11 @@ CREATE TABLE `pmb_account` (
                                `enabled` tinyint(1) NOT NULL DEFAULT '1',
                                `email` varchar(255) COLLATE utf8_bin NOT NULL,
                                `password` varchar(60) COLLATE utf8_bin DEFAULT NULL,
-                               `owner` bigint DEFAULT NULL,
-                               `role` bigint DEFAULT NULL,
+                               `owner` bigint,
+                               `role` bigint,
                                PRIMARY KEY (`account_id`),
                                UNIQUE KEY `UK_2h2q0wctl6qxe7iawc42fml1d` (`email`),
-                               KEY `ownerFK_idx` (`owner`),
-                               KEY `fkrole_idx` (`role`),
+                               CONSTRAINT `fk_role`  FOREIGN KEY (`role`) REFERENCES `db_payMyBuddy`.`role` (`role_id`),
                                CONSTRAINT `fk_account_owner` FOREIGN KEY (`owner`) REFERENCES `user` (`iduser`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
 
@@ -73,7 +72,6 @@ CREATE TABLE `contact` (
                            `owner_id` bigint NOT NULL,
                            `contact_id` bigint NOT NULL,
                            PRIMARY KEY (`owner_id`,`contact_id`),
-                           KEY `fk_contact_idx` (`contact_id`),
                            CONSTRAINT `fk_contact` FOREIGN KEY (`contact_id`) REFERENCES `user` (`iduser`) ON DELETE RESTRICT ON UPDATE CASCADE,
                            CONSTRAINT `fk_contact_owner` FOREIGN KEY (`owner_id`) REFERENCES `user` (`iduser`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
@@ -91,12 +89,13 @@ CREATE TABLE `bank_account` (
                                 `idbank_account` bigint NOT NULL AUTO_INCREMENT,
                                 `iban` varchar(255) COLLATE utf8_bin DEFAULT NULL,
                                 `swift` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-                                `owner` bigint unsigned DEFAULT NULL,
+                                `owner` bigint DEFAULT NULL,
                                 PRIMARY KEY (`idbank_account`),
                                 UNIQUE KEY `iban_UNIQUE` (`iban`),
                                 UNIQUE KEY `swift_UNIQUE` (`swift`) /*!80000 INVISIBLE */,
-                                KEY `fkOwner_idx` (`owner`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+                                UNIQUE KEY `owner_UNIQUE` (`owner`),
+                                CONSTRAINT `fk_bank_owner` FOREIGN KEY (`owner`) REFERENCES `user` (`iduser`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
 --
 -- Dumping data for table `bank_account`
 --
@@ -118,9 +117,6 @@ CREATE TABLE `transaction` (
                                `debit_account` bigint DEFAULT NULL,
                                `bankaccount` bigint DEFAULT NULL,
                                PRIMARY KEY (`idtransaction`),
-                               KEY `fk_debitaccount_idx` (`debit_account`),
-                               KEY `fk_creditaccount_idx` (`credit_account`),
-                               KEY `fk_bankaccount_idx` (`bankaccount`),
                                CONSTRAINT `fk_bankaccount` FOREIGN KEY (`bankaccount`) REFERENCES `bank_account` (`idbank_account`) ON UPDATE CASCADE,
                                CONSTRAINT `fk_creditaccount` FOREIGN KEY (`credit_account`) REFERENCES `pmb_account` (`account_id`) ON UPDATE CASCADE,
                                CONSTRAINT `fk_debitaccount` FOREIGN KEY (`debit_account`) REFERENCES `pmb_account` (`account_id`) ON UPDATE CASCADE
